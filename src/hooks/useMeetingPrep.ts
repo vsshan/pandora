@@ -11,6 +11,7 @@ export interface ScriptSection {
 export interface PrepPlayerState {
   isPlaying: boolean;
   isPaused: boolean;
+  isStarting: boolean;
   currentSectionIndex: number;
   currentSectionName: string;
   elapsed: number;
@@ -116,6 +117,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
   const [state, setState] = useState<PrepPlayerState>({
     isPlaying: false,
     isPaused: false,
+    isStarting: false,
     currentSectionIndex: 0,
     currentSectionName: '',
     elapsed: 0,
@@ -133,7 +135,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
   }, []);
 
   const startTimer = useCallback(
-    (_total: number) => {
+    () => {
       stopTimer();
       timerRef.current = setInterval(() => {
         setState((prev) => {
@@ -151,7 +153,8 @@ export function useMeetingPrep(meeting: Meeting | null) {
     (sections: ScriptSection[], index: number) => {
       if (index >= sections.length) {
         stopTimer();
-        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+        window.speechSynthesis.cancel();
+        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false, isStarting: false, sections: [] }));
         return;
       }
       const section = sections[index];
@@ -165,6 +168,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
           currentSectionName: section.sectionName,
           isPlaying: true,
           isPaused: false,
+          isStarting: false,
         }));
       };
       utterance.onend = () => {
@@ -187,6 +191,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
       setState({
         isPlaying: false,
         isPaused: false,
+        isStarting: true,
         currentSectionIndex: 0,
         currentSectionName: sections[0]?.sectionName ?? '',
         elapsed: 0,
@@ -194,7 +199,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
         sections,
       });
 
-      startTimer(total);
+      startTimer();
       speakSection(sections, 0);
     },
     [meeting, stopTimer, startTimer, speakSection]
@@ -208,7 +213,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
 
   const resume = useCallback(() => {
     window.speechSynthesis.resume();
-    startTimer(state.total);
+    startTimer();
     setState((prev) => ({ ...prev, isPlaying: true, isPaused: false }));
   }, [startTimer, state.total]);
 
@@ -218,6 +223,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
     setState({
       isPlaying: false,
       isPaused: false,
+      isStarting: false,
       currentSectionIndex: 0,
       currentSectionName: '',
       elapsed: 0,

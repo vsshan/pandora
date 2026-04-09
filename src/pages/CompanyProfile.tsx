@@ -334,7 +334,12 @@ function MeetingsTab() {
             <button
               key={tab.id}
               type="button"
-              onClick={() => setFilter(tab.id)}
+              onClick={() => {
+                if (tab.id !== 'upcoming') {
+                  handleStop();
+                }
+                setFilter(tab.id);
+              }}
               className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                 filter === tab.id
                   ? 'bg-card-light dark:bg-card-dark text-primary dark:text-text-dark-primary shadow-sm'

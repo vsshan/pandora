@@ -1,5 +1,4 @@
-import { PrepDuration, PrepPlayerState } from '../hooks/useMeetingPrep';
-import { formatElapsed } from '../hooks/useMeetingPrep';
+import { PrepDuration, PrepPlayerState, formatElapsed } from '../hooks/useMeetingPrep';
 
 interface MeetingPrepPlayerProps {
   state: PrepPlayerState;
@@ -72,19 +71,29 @@ export default function MeetingPrepPlayer({
 
           {/* Controls */}
           <div className="flex items-center gap-2">
-            {state.isPlaying ? (
+            {state.isStarting ? (
               <button
+                type="button"
+                disabled
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary/5 dark:bg-accent/5 py-2 text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary cursor-not-allowed"
+              >
+                Starting…
+              </button>
+            ) : state.isPlaying ? (
+              <button
+                type="button"
                 onClick={onPause}
                 className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary/10 dark:bg-accent/10 py-2 text-sm font-semibold text-primary dark:text-accent"
               >
-                <span>⏸</span> Pause
+                <span aria-hidden="true">⏸</span> Pause
               </button>
             ) : (
               <button
+                type="button"
                 onClick={onResume}
                 className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary/10 dark:bg-accent/10 py-2 text-sm font-semibold text-primary dark:text-accent"
               >
-                <span>▶</span> Resume
+                <span aria-hidden="true">▶</span> Resume
               </button>
             )}
             <button
