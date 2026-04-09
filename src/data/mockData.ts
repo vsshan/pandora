@@ -289,7 +289,7 @@ export const upcomingMeetings: Meeting[] = [
 export const previousMeetings: Meeting[] = [
   {
     id: '4',
-    date: 'Oct 26, 2023',
+    date: 'Feb 18, 2026',
     title: 'Introductory Pitch',
     type: 'client-meeting',
     typeLabel: 'Client Meeting',
@@ -300,7 +300,7 @@ export const previousMeetings: Meeting[] = [
   },
   {
     id: '5',
-    date: 'Oct 19, 2023',
+    date: 'Mar 05, 2026',
     title: 'Follow-up on M&A Proposal',
     type: 'client-call',
     typeLabel: 'Client Call',

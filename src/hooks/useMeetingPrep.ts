@@ -133,16 +133,14 @@ export function useMeetingPrep(meeting: Meeting | null) {
   }, []);
 
   const startTimer = useCallback(
-    (total: number) => {
+    (_total: number) => {
       stopTimer();
       timerRef.current = setInterval(() => {
         setState((prev) => {
-          const next = prev.elapsed + 1;
-          if (next >= total) {
-            stopTimer();
-            return { ...prev, elapsed: total, isPlaying: false, isPaused: false };
+          if (prev.elapsed + 1 >= prev.total) {
+            return { ...prev, elapsed: prev.total, isPlaying: false, isPaused: false };
           }
-          return { ...prev, elapsed: next };
+          return { ...prev, elapsed: prev.elapsed + 1 };
         });
       }, 1000);
     },
@@ -150,7 +148,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
   );
 
   const speakSection = useCallback(
-    (sections: ScriptSection[], index: number, total: number) => {
+    (sections: ScriptSection[], index: number) => {
       if (index >= sections.length) {
         stopTimer();
         setState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
@@ -159,6 +157,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
       const section = sections[index];
       const utterance = new SpeechSynthesisUtterance(section.text);
       utterance.rate = 0.95;
+      utterance.lang = 'en-US';
       utterance.onstart = () => {
         setState((prev) => ({
           ...prev,
@@ -169,7 +168,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
         }));
       };
       utterance.onend = () => {
-        speakSection(sections, index + 1, total);
+        speakSection(sections, index + 1);
       };
       window.speechSynthesis.speak(utterance);
     },
@@ -196,7 +195,7 @@ export function useMeetingPrep(meeting: Meeting | null) {
       });
 
       startTimer(total);
-      speakSection(sections, 0, total);
+      speakSection(sections, 0);
     },
     [meeting, stopTimer, startTimer, speakSection]
   );
@@ -209,11 +208,9 @@ export function useMeetingPrep(meeting: Meeting | null) {
 
   const resume = useCallback(() => {
     window.speechSynthesis.resume();
-    setState((prev) => {
-      startTimer(prev.total);
-      return { ...prev, isPlaying: true, isPaused: false };
-    });
-  }, [startTimer]);
+    startTimer(state.total);
+    setState((prev) => ({ ...prev, isPlaying: true, isPaused: false }));
+  }, [startTimer, state.total]);
 
   const stop = useCallback(() => {
     window.speechSynthesis.cancel();
@@ -230,11 +227,18 @@ export function useMeetingPrep(meeting: Meeting | null) {
   }, [stopTimer]);
 
   useEffect(() => {
+    if (state.total > 0 && state.elapsed >= state.total) {
+      window.speechSynthesis.cancel();
+      stopTimer();
+    }
+  }, [state.elapsed, state.total, stopTimer]);
+
+  useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
       stopTimer();
     };
   }, [stopTimer]);
 
-  return { state, start, pause, resume, stop, formatElapsed };
+  return { state, start, pause, resume, stop };
 }
