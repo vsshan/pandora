@@ -1,0 +1,111 @@
+<h2>How should the podcast player look?</h2>
+<p class="subtitle">After tapping "Meeting Prep" on a meeting card, a duration picker appears, then the player. Which style feels right for this mobile CRM?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0A2342;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <!-- Meeting card with expanded player -->
+      <div style="background:#1D2939;border-radius:10px;padding:14px;">
+        <div style="color:#A98F5B;font-size:11px;font-weight:600;margin-bottom:4px;">UPCOMING · NOV 05</div>
+        <div style="color:#fff;font-size:13px;font-weight:600;">Project Phoenix - Pitch Prep</div>
+        <div style="color:#5A6D7C;font-size:11px;margin-top:2px;margin-bottom:12px;">James Harrison · VP</div>
+
+        <!-- Duration selector -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <div style="background:#0A2342;border:1px solid #5A6D7C;color:#5A6D7C;border-radius:6px;padding:5px 12px;font-size:11px;">5 min</div>
+          <div style="background:#A98F5B;color:#fff;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;">10 min ✓</div>
+          <div style="background:#0A2342;border:1px solid #5A6D7C;color:#5A6D7C;border-radius:6px;padding:5px 12px;font-size:11px;">15 min</div>
+        </div>
+
+        <!-- Player -->
+        <div style="background:#0A2342;border-radius:8px;padding:10px 12px;">
+          <div style="color:#A98F5B;font-size:10px;font-weight:700;margin-bottom:6px;">NOW PLAYING</div>
+          <div style="color:#fff;font-size:12px;margin-bottom:8px;">Meeting Brief · 10 min</div>
+          <!-- Progress bar -->
+          <div style="background:#5A6D7C;border-radius:4px;height:4px;margin-bottom:8px;">
+            <div style="background:#A98F5B;width:35%;height:4px;border-radius:4px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;color:#5A6D7C;font-size:10px;margin-bottom:10px;"><span>3:28</span><span>10:00</span></div>
+          <div style="display:flex;justify-content:center;gap:20px;align-items:center;">
+            <div style="color:#5A6D7C;font-size:18px;">⏮</div>
+            <div style="background:#A98F5B;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;">⏸</div>
+            <div style="color:#5A6D7C;font-size:18px;">⏭</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Expanded Card</h3>
+      <p>The meeting card expands in-place to reveal the duration picker and player. Minimal navigation — stays in context of the meetings list.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0A2342;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <!-- Bottom sheet style -->
+      <div style="background:#1D2939;border-radius:16px 16px 10px 10px;padding:16px;">
+        <div style="text-align:center;margin-bottom:12px;">
+          <div style="width:36px;height:4px;background:#5A6D7C;border-radius:2px;margin:0 auto 12px;"></div>
+          <div style="color:#A98F5B;font-size:11px;font-weight:700;">MEETING PREP</div>
+          <div style="color:#fff;font-size:14px;font-weight:600;margin-top:4px;">Project Phoenix - Pitch Prep</div>
+          <div style="color:#5A6D7C;font-size:11px;">Nov 05 · James Harrison</div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;">
+          <div style="background:#0A2342;border:1px solid #5A6D7C;color:#5A6D7C;border-radius:20px;padding:5px 14px;font-size:11px;">5 min</div>
+          <div style="background:#A98F5B;color:#fff;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:600;">10 min</div>
+          <div style="background:#0A2342;border:1px solid #5A6D7C;color:#5A6D7C;border-radius:20px;padding:5px 14px;font-size:11px;">15 min</div>
+        </div>
+        <div style="background:#0A2342;border-radius:10px;padding:12px;">
+          <div style="background:#5A6D7C;border-radius:4px;height:3px;margin-bottom:8px;">
+            <div style="background:#A98F5B;width:35%;height:3px;border-radius:4px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;color:#5A6D7C;font-size:10px;margin-bottom:10px;"><span>3:28</span><span>10:00</span></div>
+          <div style="display:flex;justify-content:center;gap:24px;align-items:center;">
+            <div style="color:#5A6D7C;font-size:20px;">⏮</div>
+            <div style="background:#A98F5B;color:#fff;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;">⏸</div>
+            <div style="color:#5A6D7C;font-size:20px;">⏭</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Bottom Sheet</h3>
+      <p>Tapping "Meeting Prep" slides up a bottom sheet with the duration picker and player. Common mobile pattern, feels native and focused.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0A2342;padding:16px;border-radius:8px;font-family:sans-serif;">
+      <!-- Full screen -->
+      <div style="background:#101922;border-radius:10px;padding:14px;text-align:center;">
+        <div style="color:#5A6D7C;font-size:10px;margin-bottom:12px;">← Back to Meetings</div>
+        <div style="width:60px;height:60px;background:#1D2939;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:24px;">🎧</div>
+        <div style="color:#A98F5B;font-size:11px;font-weight:700;">MEETING PREP</div>
+        <div style="color:#fff;font-size:14px;font-weight:600;margin:4px 0 2px;">Project Phoenix</div>
+        <div style="color:#5A6D7C;font-size:11px;margin-bottom:14px;">Nov 05 · 10 min brief</div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;">
+          <div style="background:#1D2939;color:#5A6D7C;border-radius:16px;padding:4px 12px;font-size:11px;">5 min</div>
+          <div style="background:#A98F5B;color:#fff;border-radius:16px;padding:4px 12px;font-size:11px;font-weight:600;">10 min</div>
+          <div style="background:#1D2939;color:#5A6D7C;border-radius:16px;padding:4px 12px;font-size:11px;">15 min</div>
+        </div>
+        <div style="background:#1D2939;border-radius:8px;height:3px;margin-bottom:6px;">
+          <div style="background:#A98F5B;width:35%;height:3px;border-radius:4px;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;color:#5A6D7C;font-size:10px;margin-bottom:12px;"><span>3:28</span><span>10:00</span></div>
+        <div style="display:flex;justify-content:center;gap:28px;align-items:center;">
+          <div style="color:#5A6D7C;font-size:22px;">⏮</div>
+          <div style="background:#A98F5B;color:#fff;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:20px;">⏸</div>
+          <div style="color:#5A6D7C;font-size:22px;">⏭</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Full Screen Player</h3>
+      <p>Tapping "Meeting Prep" navigates to a dedicated full-screen player page. Immersive, feels like a real podcast app. Back button returns to meetings.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Click to select, then confirm in the terminal.</p>
