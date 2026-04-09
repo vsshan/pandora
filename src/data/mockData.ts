@@ -28,7 +28,7 @@ export interface NewsItem {
   headline: string;
   preview: string;
   date: string;
-  isoDate: string;
+  isoDate?: string;
   imageUrl?: string;
 }
 
@@ -38,7 +38,7 @@ export interface Insight {
   authorAvatar?: string;
   content: string;
   date: string;
-  isoDate: string;
+  isoDate?: string;
   source?: string;
 }
 
@@ -181,7 +181,6 @@ export const homeNews: NewsItem[] = [
     headline: "Oracle's Cloud Division Posts Record Growth",
     preview: '',
     date: 'Oct 26, 2023',
-    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuB2cpmtQdb4AyauOeUXXIn5Oj1ODi-RlhFClBW6dT9LdaJJDno_xXpIBKRctVEkmNanBPxlQhuOyr_EYyVZe2X6dKPsEEUa2DoM-Au4QX3d7X17f37FACq7QFNcmecWn33QyFL91p0c123xGtDVSnYqgyYuvVS6wV-6_GvYPCT8L-XQmEQ0NuYYiszQNPrjlcaxjVMGXgAtTZ0znYagIM3piJqV9Aeuty6h-b1K7g9oFe5ZFAsDxvwrZ7szqRAqVwnGVTBWzdY5CBTY',
   },
@@ -191,7 +190,6 @@ export const homeNews: NewsItem[] = [
     headline: 'Salesforce Unveils New AI-Powered CRM Features',
     preview: '',
     date: 'Oct 25, 2023',
-    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDZMnnuPAli2YJgsvebzys3Vlq6ro94biPDxudflMKD_cNbDTAtToL1dq5YegrR-UXlFK7EYmNGklCtsp3IYEyjSIiLqjAhn2jpV_osheNfDBarG7a4Gq_ahnxkq3FbZufu9J15rVW7Mca2Evmgs-MAk9jTNEjJgLum-Njg_WxFuk2CGQ7MlVUsl8_Uk3nJYk3Xn1c_EL_xTsEQOj9oP4kYyTt9Vf0Z7A_sukStbp_a7OTIGIKQIoxvVEGFqveL83JShCTN_hUNkeTl',
   },
@@ -201,7 +199,6 @@ export const homeNews: NewsItem[] = [
     headline: "Adobe's Acquisition of Figma Faces Regulatory Scrutiny",
     preview: '',
     date: 'Oct 24, 2023',
-    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCW49494qFEVZ-OIVJFHFPT9Vq7Ijyouh3-rKjU6DT5s9c_EkJIlqnP0tS4SImrej3xBivsN4vZ9MIO_mYitAFrBFqZyVwayCFUqTO7nu9c8mmESyVQyuwxnW0yxz-LFACIjiNHdku9xqH75-DdYVDXJZWjI_CLARgP6h3ax_fDGsG82DC6dpDUnOdxxtlk1a-1ewdW5T96nlOIs7G-aTsFRM4AxhP06g-BaV7bk6PszeeITAPw0xsCHtdKC1QdB6kZKztpciA5gVkr',
   },
@@ -236,7 +233,6 @@ export const homeInsights: Insight[] = [
     author: 'Internal Analyst',
     content: "Recent M&A Activity in the Tech Sector",
     date: '',
-    isoDate: '',
     source: 'Internal Analyst',
   },
   {
@@ -244,7 +240,6 @@ export const homeInsights: Insight[] = [
     author: 'Market Research Team',
     content: 'Competitive Landscape Analysis: CRM',
     date: '',
-    isoDate: '',
     source: 'Market Research Team',
   },
   {
@@ -252,7 +247,6 @@ export const homeInsights: Insight[] = [
     author: 'Sector Specialist',
     content: 'Digital Media Subscription Trends',
     date: '',
-    isoDate: '',
     source: 'Sector Specialist',
   },
 ];
