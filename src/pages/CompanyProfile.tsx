@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
+import MeetingPrepPlayer from '../components/MeetingPrepPlayer';
+import { useMeetingPrep } from '../hooks/useMeetingPrep';
 import {
   innovatech,
   recentActivity,
@@ -266,6 +268,14 @@ function OverviewTab({ onCoverageClick }: { onCoverageClick: () => void }) {
 function MeetingsTab() {
   const [filter, setFilter] = useState<MeetingFilter>('upcoming');
   const [search, setSearch] = useState('');
+  const [activePrepId, setActivePrepId] = useState<string | null>(null);
+
+  const activeMeeting =
+    activePrepId != null
+      ? upcomingMeetings.find((m) => m.id === activePrepId) ?? null
+      : null;
+
+  const { state: prepState, start, pause, resume, stop } = useMeetingPrep(activeMeeting);
 
   const meetings = filter === 'upcoming' ? upcomingMeetings : previousMeetings;
 
@@ -281,6 +291,23 @@ function MeetingsTab() {
     'client-meeting': 'bg-secondary/10 text-secondary dark:bg-secondary/20',
     'no-visibility': 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300',
   };
+
+  function handlePrepClick(meetingId: string) {
+    if (activePrepId === meetingId) {
+      if (!prepState.isPlaying && !prepState.isPaused) {
+        stop();
+        setActivePrepId(null);
+      }
+    } else {
+      stop();
+      setActivePrepId(meetingId);
+    }
+  }
+
+  function handleStop() {
+    stop();
+    setActivePrepId(null);
+  }
 
   return (
     <main className="flex-1 pb-24">
@@ -298,7 +325,7 @@ function MeetingsTab() {
             placeholder="Search meetings..."
             className="w-full rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark py-2.5 pl-10 pr-10 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm"
           />
-          <button className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
+          <button type="button" className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
             <Icon name="tune" />
           </button>
         </div>
@@ -313,6 +340,7 @@ function MeetingsTab() {
           ].map((tab) => (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setFilter(tab.id)}
               className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                 filter === tab.id
@@ -362,6 +390,29 @@ function MeetingsTab() {
                   <span className="font-medium">{meeting.ownerTitle}</span>
                 </p>
               </div>
+
+              {/* Meeting Prep — upcoming meetings only */}
+              {filter === 'upcoming' && (
+                <div className="mt-3">
+                  {activePrepId !== meeting.id ? (
+                    <button
+                      type="button"
+                      onClick={() => handlePrepClick(meeting.id)}
+                      className="flex items-center gap-1.5 rounded-lg bg-accent/10 px-3 py-2 text-sm font-semibold text-accent hover:bg-accent hover:text-white dark:hover:text-primary transition-colors"
+                    >
+                      <span aria-hidden="true">🎧</span> Meeting Prep
+                    </button>
+                  ) : (
+                    <MeetingPrepPlayer
+                      state={prepState}
+                      onStart={start}
+                      onPause={pause}
+                      onResume={resume}
+                      onStop={handleStop}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -392,7 +443,7 @@ function MeetingsTab() {
       </div>
 
       {/* FAB */}
-      <button className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
+      <button type="button" className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
         <Icon name="add" />
         Add meeting
       </button>
