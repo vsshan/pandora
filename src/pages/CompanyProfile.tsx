@@ -293,15 +293,8 @@ function MeetingsTab() {
   };
 
   function handlePrepClick(meetingId: string) {
-    if (activePrepId === meetingId) {
-      if (!prepState.isPlaying && !prepState.isPaused) {
-        stop();
-        setActivePrepId(null);
-      }
-    } else {
-      stop();
-      setActivePrepId(meetingId);
-    }
+    stop();
+    setActivePrepId(meetingId);
   }
 
   function handleStop() {
