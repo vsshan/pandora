@@ -19,6 +19,7 @@ export interface Meeting {
   owner: string;
   ownerTitle: string;
   hasAlert?: boolean;
+  actionItems?: string[];
 }
 
 export interface NewsItem {
@@ -27,6 +28,7 @@ export interface NewsItem {
   headline: string;
   preview: string;
   date: string;
+  isoDate: string;
   imageUrl?: string;
 }
 
@@ -36,6 +38,7 @@ export interface Insight {
   authorAvatar?: string;
   content: string;
   date: string;
+  isoDate: string;
   source?: string;
 }
 
@@ -150,21 +153,24 @@ export const companyNews: NewsItem[] = [
     source: 'TechCrunch',
     headline: 'Innovatech Solutions Secures $200M in Series D Funding',
     preview: 'The new funding round, led by...',
-    date: 'Oct 26, 2023',
+    date: 'Apr 07, 2026',
+    isoDate: '2026-04-07',
   },
   {
     id: '2',
     source: 'Bloomberg',
     headline: 'CEO Eleanor Vance on the Future of Enterprise AI',
     preview: 'An in-depth interview on strategy...',
-    date: 'Oct 24, 2023',
+    date: 'Apr 02, 2026',
+    isoDate: '2026-04-02',
   },
   {
     id: '3',
     source: 'Reuters',
     headline: 'Innovatech Launches New Predictive Analytics Suite',
     preview: 'The platform aims to revolutionize...',
-    date: 'Oct 22, 2023',
+    date: 'Mar 15, 2026',
+    isoDate: '2026-03-15',
   },
 ];
 
@@ -175,6 +181,7 @@ export const homeNews: NewsItem[] = [
     headline: "Oracle's Cloud Division Posts Record Growth",
     preview: '',
     date: 'Oct 26, 2023',
+    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuB2cpmtQdb4AyauOeUXXIn5Oj1ODi-RlhFClBW6dT9LdaJJDno_xXpIBKRctVEkmNanBPxlQhuOyr_EYyVZe2X6dKPsEEUa2DoM-Au4QX3d7X17f37FACq7QFNcmecWn33QyFL91p0c123xGtDVSnYqgyYuvVS6wV-6_GvYPCT8L-XQmEQ0NuYYiszQNPrjlcaxjVMGXgAtTZ0znYagIM3piJqV9Aeuty6h-b1K7g9oFe5ZFAsDxvwrZ7szqRAqVwnGVTBWzdY5CBTY',
   },
@@ -184,6 +191,7 @@ export const homeNews: NewsItem[] = [
     headline: 'Salesforce Unveils New AI-Powered CRM Features',
     preview: '',
     date: 'Oct 25, 2023',
+    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDZMnnuPAli2YJgsvebzys3Vlq6ro94biPDxudflMKD_cNbDTAtToL1dq5YegrR-UXlFK7EYmNGklCtsp3IYEyjSIiLqjAhn2jpV_osheNfDBarG7a4Gq_ahnxkq3FbZufu9J15rVW7Mca2Evmgs-MAk9jTNEjJgLum-Njg_WxFuk2CGQ7MlVUsl8_Uk3nJYk3Xn1c_EL_xTsEQOj9oP4kYyTt9Vf0Z7A_sukStbp_a7OTIGIKQIoxvVEGFqveL83JShCTN_hUNkeTl',
   },
@@ -193,6 +201,7 @@ export const homeNews: NewsItem[] = [
     headline: "Adobe's Acquisition of Figma Faces Regulatory Scrutiny",
     preview: '',
     date: 'Oct 24, 2023',
+    isoDate: '',
     imageUrl:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCW49494qFEVZ-OIVJFHFPT9Vq7Ijyouh3-rKjU6DT5s9c_EkJIlqnP0tS4SImrej3xBivsN4vZ9MIO_mYitAFrBFqZyVwayCFUqTO7nu9c8mmESyVQyuwxnW0yxz-LFACIjiNHdku9xqH75-DdYVDXJZWjI_CLARgP6h3ax_fDGsG82DC6dpDUnOdxxtlk1a-1ewdW5T96nlOIs7G-aTsFRM4AxhP06g-BaV7bk6PszeeITAPw0xsCHtdKC1QdB6kZKztpciA5gVkr',
   },
@@ -206,7 +215,8 @@ export const companyInsights: Insight[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBpE1D4t_KnB_qLPjHc6QAulkt3a99GWH9HsFrrixeQXEs4G5P9stUqlreNfGh6GaV7pKfrfUsuWMdQ1kg4SzPTKKAb0GT5he8bDTE1E2kdkFviyW8esRhY3l6krLW-gQTx-EBR8vWjNUBOGwleAwKnnLFUMxh0QOhLmm9isg9kPW8-unyjeHYDx9RVznNfCG339sbUeJmNG4y05ijO8jLjH17VmryrLfY-wajYp6qu97WmFh5YkzBgl3iEMQB2QdbKuv57-OzR5QOV',
     content:
       "Deep dive on Innovatech's latest 10-K filing. Key takeaway: margin expansion is accelerating faster than anticipated.",
-    date: 'Oct 25, 2023',
+    date: 'Apr 05, 2026',
+    isoDate: '2026-04-05',
   },
   {
     id: '2',
@@ -215,7 +225,8 @@ export const companyInsights: Insight[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCXPog53vUjhxSAxc8AF_HZ7k0xxQhxgPHfOYet7qTUdGkOjLNyVejHGi6qcdzxlfoc1czpGdzrz7SELio5e04dGtOlxPcktFu7SVPHnlle0RyurddlmFG8rdOccIPgyBbqqzSqbO58rJ3oGdBt03JNyS6NGB7bGV7OjZNdMzCt93vPPTpF3Yv5DrTxFc9uiWr00L6hTvwaoR6-j_QKhG4Ia3gdDKG4neL2FKT3t1iz1Yah5c-58i5DZVFb3sz0bEUw1TpBvQMJqzPS',
     content:
       'Analysis of recent executive commentary suggests a major product announcement is imminent. Potential M&A target?',
-    date: 'Oct 23, 2023',
+    date: 'Mar 28, 2026',
+    isoDate: '2026-03-28',
   },
 ];
 
@@ -225,6 +236,7 @@ export const homeInsights: Insight[] = [
     author: 'Internal Analyst',
     content: "Recent M&A Activity in the Tech Sector",
     date: '',
+    isoDate: '',
     source: 'Internal Analyst',
   },
   {
@@ -232,6 +244,7 @@ export const homeInsights: Insight[] = [
     author: 'Market Research Team',
     content: 'Competitive Landscape Analysis: CRM',
     date: '',
+    isoDate: '',
     source: 'Market Research Team',
   },
   {
@@ -239,6 +252,7 @@ export const homeInsights: Insight[] = [
     author: 'Sector Specialist',
     content: 'Digital Media Subscription Trends',
     date: '',
+    isoDate: '',
     source: 'Sector Specialist',
   },
 ];
@@ -288,6 +302,7 @@ export const previousMeetings: Meeting[] = [
     typeIcon: 'business_center',
     owner: 'Michael Chen',
     ownerTitle: 'Associate',
+    actionItems: ['Send updated pitch deck by Nov 1', 'Introduce CFO to Michael Chen'],
   },
   {
     id: '5',
@@ -298,5 +313,6 @@ export const previousMeetings: Meeting[] = [
     typeIcon: 'phone',
     owner: 'Sarah Jenkins',
     ownerTitle: 'Vice President',
+    actionItems: ['Share comparable transaction analysis', 'Schedule follow-up with legal team'],
   },
 ];
