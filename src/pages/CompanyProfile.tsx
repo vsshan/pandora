@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
+import PodcastButton from '../components/PodcastButton';
+import PodcastPlayer from '../components/PodcastPlayer';
+import MiniPodcastPlayer from '../components/MiniPodcastPlayer';
+import { usePodcast } from '../hooks/usePodcast';
 import {
   innovatech,
   recentActivity,
@@ -266,14 +270,21 @@ function OverviewTab({ onCoverageClick }: { onCoverageClick: () => void }) {
 function MeetingsTab() {
   const [filter, setFilter] = useState<MeetingFilter>('upcoming');
   const [search, setSearch] = useState('');
+  const [playerOpen, setPlayerOpen] = useState(false);
+  const { session, generate, dismiss } = usePodcast();
 
   const meetings = filter === 'upcoming' ? upcomingMeetings : previousMeetings;
+  const allMeetings = [...upcomingMeetings, ...previousMeetings];
 
   const filtered = meetings.filter(
     (m) =>
       m.title.toLowerCase().includes(search.toLowerCase()) ||
       m.owner.toLowerCase().includes(search.toLowerCase())
   );
+
+  const activeMeeting = session
+    ? allMeetings.find((m) => m.id === session.meetingId)
+    : null;
 
   const meetingTypeColors: Record<string, string> = {
     internal: 'bg-primary/10 text-primary dark:bg-primary/20',
@@ -283,120 +294,150 @@ function MeetingsTab() {
   };
 
   return (
-    <main className="flex-1 pb-24">
-      {/* Search */}
-      <div className="p-4">
-        <div className="relative flex items-center">
-          <Icon
-            name="search"
-            className="absolute left-3 text-text-light-secondary dark:text-text-dark-secondary"
-          />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search meetings..."
-            className="w-full rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark py-2.5 pl-10 pr-10 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm"
-          />
-          <button className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
-            <Icon name="tune" />
-          </button>
-        </div>
-      </div>
-
-      {/* Upcoming / Previous Toggle */}
-      <div className="px-4">
-        <div className="flex rounded-lg bg-background-light dark:bg-background-dark/50 p-1 gap-1">
-          {[
-            { id: 'upcoming' as MeetingFilter, label: 'Upcoming' },
-            { id: 'previous' as MeetingFilter, label: 'Previous' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setFilter(tab.id)}
-              className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
-                filter === tab.id
-                  ? 'bg-card-light dark:bg-card-dark text-primary dark:text-text-dark-primary shadow-sm'
-                  : 'text-text-light-secondary dark:text-text-dark-secondary'
-              }`}
-            >
-              {tab.label}
+    <>
+      <main className="flex-1 pb-36">
+        {/* Search */}
+        <div className="p-4">
+          <div className="relative flex items-center">
+            <Icon
+              name="search"
+              className="absolute left-3 text-text-light-secondary dark:text-text-dark-secondary"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search meetings..."
+              className="w-full rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark py-2.5 pl-10 pr-10 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm"
+            />
+            <button className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
+              <Icon name="tune" />
             </button>
-          ))}
+          </div>
         </div>
-      </div>
 
-      {/* Meeting List */}
-      <div className="mt-4 space-y-3 px-4">
-        {filtered.map((meeting) => (
-          <div
-            key={meeting.id}
-            className="overflow-hidden rounded-xl bg-card-light dark:bg-card-dark shadow-sm"
-          >
-            <div className="p-4">
-              <p className="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary mb-2">
-                {meeting.date}
-              </p>
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0 pr-3">
-                  <h4 className="text-base font-bold text-text-light-primary dark:text-text-dark-primary">
-                    {meeting.title}
-                  </h4>
-                  <div
-                    className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium ${meetingTypeColors[meeting.type]}`}
-                  >
-                    <Icon name={meeting.typeIcon} filled className="text-sm" />
-                    <span>{meeting.typeLabel}</span>
+        {/* Upcoming / Previous Toggle */}
+        <div className="px-4">
+          <div className="flex rounded-lg bg-background-light dark:bg-background-dark/50 p-1 gap-1">
+            {[
+              { id: 'upcoming' as MeetingFilter, label: 'Upcoming' },
+              { id: 'previous' as MeetingFilter, label: 'Previous' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setFilter(tab.id)}
+                className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
+                  filter === tab.id
+                    ? 'bg-card-light dark:bg-card-dark text-primary dark:text-text-dark-primary shadow-sm'
+                    : 'text-text-light-secondary dark:text-text-dark-secondary'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Meeting List */}
+        <div className="mt-4 space-y-3 px-4">
+          {filtered.map((meeting) => (
+            <div
+              key={meeting.id}
+              className="overflow-hidden rounded-xl bg-card-light dark:bg-card-dark shadow-sm"
+            >
+              <div className="p-4">
+                <p className="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary mb-2">
+                  {meeting.date}
+                </p>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0 pr-3">
+                    <h4 className="text-base font-bold text-text-light-primary dark:text-text-dark-primary">
+                      {meeting.title}
+                    </h4>
+                    <div
+                      className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium ${meetingTypeColors[meeting.type]}`}
+                    >
+                      <Icon name={meeting.typeIcon} filled className="text-sm" />
+                      <span>{meeting.typeLabel}</span>
+                    </div>
                   </div>
+                  {meeting.hasAlert && (
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500" />
+                  )}
                 </div>
-                {meeting.hasAlert && (
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500" />
-                )}
-              </div>
-              <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
-                <p className="text-xs font-medium uppercase tracking-wide text-text-light-secondary dark:text-text-dark-secondary">
-                  Owner
-                </p>
-                <p className="mt-0.5 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
-                  {meeting.owner},{' '}
-                  <span className="font-medium">{meeting.ownerTitle}</span>
-                </p>
+                <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
+                  <p className="text-xs font-medium uppercase tracking-wide text-text-light-secondary dark:text-text-dark-secondary">
+                    Owner
+                  </p>
+                  <p className="mt-0.5 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+                    {meeting.owner},{' '}
+                    <span className="font-medium">{meeting.ownerTitle}</span>
+                  </p>
+                </div>
+                {/* Podcast button */}
+                <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
+                  <PodcastButton
+                    meeting={meeting}
+                    session={session}
+                    onGenerate={generate}
+                    onOpen={() => setPlayerOpen(true)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-xl bg-card-light dark:bg-card-dark p-8 text-center shadow-sm">
-            <Icon name="event_busy" className="text-5xl text-text-light-secondary dark:text-text-dark-secondary" />
-            <p className="mt-2 text-base font-bold text-text-light-primary dark:text-text-dark-primary">
-              No meetings found
-            </p>
-            <p className="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-              Try adjusting your search or filter.
-            </p>
-          </div>
-        )}
+          {filtered.length === 0 && (
+            <div className="flex flex-col items-center justify-center rounded-xl bg-card-light dark:bg-card-dark p-8 text-center shadow-sm">
+              <Icon name="event_busy" className="text-5xl text-text-light-secondary dark:text-text-dark-secondary" />
+              <p className="mt-2 text-base font-bold text-text-light-primary dark:text-text-dark-primary">
+                No meetings found
+              </p>
+              <p className="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                Try adjusting your search or filter.
+              </p>
+            </div>
+          )}
 
-        {filtered.length > 0 && (
-          <div className="flex flex-col items-center justify-center rounded-xl bg-card-light dark:bg-card-dark p-8 text-center shadow-sm">
-            <Icon name="event_busy" className="text-5xl text-text-light-secondary dark:text-text-dark-secondary" />
-            <p className="mt-2 text-base font-bold text-text-light-primary dark:text-text-dark-primary">
-              No more meetings
-            </p>
-            <p className="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-              You've reached the end of the list.
-            </p>
-          </div>
-        )}
-      </div>
+          {filtered.length > 0 && (
+            <div className="flex flex-col items-center justify-center rounded-xl bg-card-light dark:bg-card-dark p-8 text-center shadow-sm">
+              <Icon name="event_busy" className="text-5xl text-text-light-secondary dark:text-text-dark-secondary" />
+              <p className="mt-2 text-base font-bold text-text-light-primary dark:text-text-dark-primary">
+                No more meetings
+              </p>
+              <p className="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                You've reached the end of the list.
+              </p>
+            </div>
+          )}
+        </div>
 
-      {/* FAB */}
-      <button className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
-        <Icon name="add" />
-        Add meeting
-      </button>
-    </main>
+        {/* FAB */}
+        <button className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
+          <Icon name="add" />
+          Add meeting
+        </button>
+      </main>
+
+      {/* Mini player — visible when a podcast is ready and the sheet is closed */}
+      {session?.status === 'ready' && !playerOpen && activeMeeting && (
+        <MiniPodcastPlayer
+          session={session}
+          meetingTitle={activeMeeting.title}
+          onOpen={() => setPlayerOpen(true)}
+          onDismiss={dismiss}
+        />
+      )}
+
+      {/* Full bottom-sheet player */}
+      {playerOpen && session?.status === 'ready' && activeMeeting && (
+        <PodcastPlayer
+          session={session}
+          meetingTitle={activeMeeting.title}
+          onClose={() => setPlayerOpen(false)}
+        />
+      )}
+    </>
   );
 }
 
