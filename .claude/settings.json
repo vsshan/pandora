@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:\\\\Users\\\\vssha\\\\.claude\\\\plugins\\\\cache\\\\claude-plugins-official\\\\superpowers\\\\5.0.7\\\\skills\\\\brainstorming\\\\scripts\\\\start-server.sh --project-dir c:/Users/vssha/pandora)",
+      "Read(//c/Users/vssha/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/**)",
+      "Bash(bash \"C:/Users/vssha/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh\" --project-dir \"c:/Users/vssha/pandora\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\vssha\\pandora\\docs\\superpowers"
+    ]
+  }
+}

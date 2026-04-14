@@ -5,6 +5,8 @@ import PodcastButton from '../components/PodcastButton';
 import PodcastPlayer from '../components/PodcastPlayer';
 import MiniPodcastPlayer from '../components/MiniPodcastPlayer';
 import { usePodcast } from '../hooks/usePodcast';
+import MeetingPrepPlayer from '../components/MeetingPrepPlayer';
+import { useMeetingPrep } from '../hooks/useMeetingPrep';
 import {
   innovatech,
   recentActivity,
@@ -273,6 +275,13 @@ function MeetingsTab() {
   const [playerOpen, setPlayerOpen] = useState(false);
   const { session, generate, dismiss } = usePodcast();
 
+  const [activePrepId, setActivePrepId] = useState<string | null>(null);
+  const activePrepMeeting =
+    activePrepId != null
+      ? upcomingMeetings.find((m) => m.id === activePrepId) ?? null
+      : null;
+  const { state: prepState, start, pause, resume, stop } = useMeetingPrep(activePrepMeeting);
+
   const meetings = filter === 'upcoming' ? upcomingMeetings : previousMeetings;
   const allMeetings = [...upcomingMeetings, ...previousMeetings];
 
@@ -293,6 +302,16 @@ function MeetingsTab() {
     'no-visibility': 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300',
   };
 
+  function handlePrepClick(meetingId: string) {
+    stop();
+    setActivePrepId(meetingId);
+  }
+
+  function handleStop() {
+    stop();
+    setActivePrepId(null);
+  }
+
   return (
     <>
       <main className="flex-1 pb-36">
@@ -310,7 +329,7 @@ function MeetingsTab() {
               placeholder="Search meetings..."
               className="w-full rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark py-2.5 pl-10 pr-10 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm"
             />
-            <button className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
+            <button type="button" className="absolute right-3 text-text-light-secondary dark:text-text-dark-secondary">
               <Icon name="tune" />
             </button>
           </div>
@@ -325,7 +344,11 @@ function MeetingsTab() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setFilter(tab.id)}
+                type="button"
+                onClick={() => {
+                  if (tab.id !== 'upcoming') handleStop();
+                  setFilter(tab.id);
+                }}
                 className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                   filter === tab.id
                     ? 'bg-card-light dark:bg-card-dark text-primary dark:text-text-dark-primary shadow-sm'
@@ -384,6 +407,29 @@ function MeetingsTab() {
                   />
                 </div>
               </div>
+
+              {/* Meeting Prep — upcoming meetings only */}
+              {filter === 'upcoming' && (
+                <div className="mt-3">
+                  {activePrepId !== meeting.id ? (
+                    <button
+                      type="button"
+                      onClick={() => handlePrepClick(meeting.id)}
+                      className="flex items-center gap-1.5 rounded-lg bg-accent/10 px-3 py-2 text-sm font-semibold text-accent hover:bg-accent hover:text-white dark:hover:text-primary transition-colors"
+                    >
+                      <span aria-hidden="true">🎧</span> Meeting Prep
+                    </button>
+                  ) : (
+                    <MeetingPrepPlayer
+                      state={prepState}
+                      onStart={start}
+                      onPause={pause}
+                      onResume={resume}
+                      onStop={handleStop}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ))}
 
@@ -413,7 +459,7 @@ function MeetingsTab() {
         </div>
 
         {/* FAB */}
-        <button className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
+        <button type="button" className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-primary dark:bg-accent px-4 py-3 text-sm font-bold text-white dark:text-primary shadow-lg">
           <Icon name="add" />
           Add meeting
         </button>

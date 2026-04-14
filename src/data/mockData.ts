@@ -22,6 +22,7 @@ export interface Meeting {
   attendees?: string[];
   location?: string;
   description?: string;
+  actionItems?: string[];
 }
 
 export interface NewsItem {
@@ -30,6 +31,7 @@ export interface NewsItem {
   headline: string;
   preview: string;
   date: string;
+  isoDate?: string;
   imageUrl?: string;
 }
 
@@ -39,6 +41,7 @@ export interface Insight {
   authorAvatar?: string;
   content: string;
   date: string;
+  isoDate?: string;
   source?: string;
 }
 
@@ -153,21 +156,24 @@ export const companyNews: NewsItem[] = [
     source: 'TechCrunch',
     headline: 'Innovatech Solutions Secures $200M in Series D Funding',
     preview: 'The new funding round, led by...',
-    date: 'Oct 26, 2023',
+    date: 'Apr 07, 2026',
+    isoDate: '2026-04-07',
   },
   {
     id: '2',
     source: 'Bloomberg',
     headline: 'CEO Eleanor Vance on the Future of Enterprise AI',
     preview: 'An in-depth interview on strategy...',
-    date: 'Oct 24, 2023',
+    date: 'Apr 02, 2026',
+    isoDate: '2026-04-02',
   },
   {
     id: '3',
     source: 'Reuters',
     headline: 'Innovatech Launches New Predictive Analytics Suite',
     preview: 'The platform aims to revolutionize...',
-    date: 'Oct 22, 2023',
+    date: 'Mar 15, 2026',
+    isoDate: '2026-03-15',
   },
 ];
 
@@ -209,7 +215,8 @@ export const companyInsights: Insight[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBpE1D4t_KnB_qLPjHc6QAulkt3a99GWH9HsFrrixeQXEs4G5P9stUqlreNfGh6GaV7pKfrfUsuWMdQ1kg4SzPTKKAb0GT5he8bDTE1E2kdkFviyW8esRhY3l6krLW-gQTx-EBR8vWjNUBOGwleAwKnnLFUMxh0QOhLmm9isg9kPW8-unyjeHYDx9RVznNfCG339sbUeJmNG4y05ijO8jLjH17VmryrLfY-wajYp6qu97WmFh5YkzBgl3iEMQB2QdbKuv57-OzR5QOV',
     content:
       "Deep dive on Innovatech's latest 10-K filing. Key takeaway: margin expansion is accelerating faster than anticipated.",
-    date: 'Oct 25, 2023',
+    date: 'Apr 05, 2026',
+    isoDate: '2026-04-05',
   },
   {
     id: '2',
@@ -218,7 +225,8 @@ export const companyInsights: Insight[] = [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCXPog53vUjhxSAxc8AF_HZ7k0xxQhxgPHfOYet7qTUdGkOjLNyVejHGi6qcdzxlfoc1czpGdzrz7SELio5e04dGtOlxPcktFu7SVPHnlle0RyurddlmFG8rdOccIPgyBbqqzSqbO58rJ3oGdBt03JNyS6NGB7bGV7OjZNdMzCt93vPPTpF3Yv5DrTxFc9uiWr00L6hTvwaoR6-j_QKhG4Ia3gdDKG4neL2FKT3t1iz1Yah5c-58i5DZVFb3sz0bEUw1TpBvQMJqzPS',
     content:
       'Analysis of recent executive commentary suggests a major product announcement is imminent. Potential M&A target?',
-    date: 'Oct 23, 2023',
+    date: 'Mar 28, 2026',
+    isoDate: '2026-03-28',
   },
 ];
 
@@ -296,7 +304,7 @@ export const upcomingMeetings: Meeting[] = [
 export const previousMeetings: Meeting[] = [
   {
     id: '4',
-    date: 'Oct 26, 2023',
+    date: 'Feb 18, 2026',
     title: 'Introductory Pitch',
     type: 'client-meeting',
     typeLabel: 'Client Meeting',
@@ -307,10 +315,11 @@ export const previousMeetings: Meeting[] = [
     location: 'Innovatech HQ, 550 Mission St, San Francisco',
     description:
       'First formal pitch to Innovatech\'s leadership team. Presented our M&A advisory credentials and initial strategic options analysis. Client was receptive to the sell-side mandate framing. Key takeaway: Eleanor emphasized timing sensitivity around their Q1 board review.',
+    actionItems: ['Send updated pitch deck by Nov 1', 'Introduce CFO to Michael Chen'],
   },
   {
     id: '5',
-    date: 'Oct 19, 2023',
+    date: 'Mar 05, 2026',
     title: 'Follow-up on M&A Proposal',
     type: 'client-call',
     typeLabel: 'Client Call',
@@ -321,6 +330,7 @@ export const previousMeetings: Meeting[] = [
     location: 'Phone Call',
     description:
       'CFO David Kim called to discuss the preliminary valuation range in our proposal. He pushed back on the revenue multiple and requested comps adjusted for pure-play SaaS peers. Agreed to revise and resubmit the analysis within the week.',
+    actionItems: ['Share comparable transaction analysis', 'Schedule follow-up with legal team'],
   },
   {
     id: '6',
