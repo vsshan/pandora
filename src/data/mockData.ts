@@ -19,6 +19,9 @@ export interface Meeting {
   owner: string;
   ownerTitle: string;
   hasAlert?: boolean;
+  attendees?: string[];
+  location?: string;
+  description?: string;
   actionItems?: string[];
 }
 
@@ -262,6 +265,10 @@ export const upcomingMeetings: Meeting[] = [
     owner: 'Sarah Jenkins',
     ownerTitle: 'Managing Director',
     hasAlert: true,
+    attendees: ['Sarah Jenkins', 'James Harrison', 'Michael Chen', 'Priya Patel'],
+    location: 'Conference Room A, 200 Park Ave, New York',
+    description:
+      'Quarterly review of the M&A and ECM pipeline for Q4. Primary focus is on Project Phoenix closing timeline, two new mandate opportunities in the enterprise software space, and calibrating cross-coverage expectations with the TMT team.',
   },
   {
     id: '2',
@@ -272,6 +279,10 @@ export const upcomingMeetings: Meeting[] = [
     typeIcon: 'phone',
     owner: 'James Harrison',
     ownerTitle: 'Vice President',
+    attendees: ['James Harrison', 'Sarah Jenkins', 'Eleanor Vance (Innovatech)', 'David Kim (Innovatech CFO)'],
+    location: 'Video Call (Zoom)',
+    description:
+      'Preparatory call before the formal pitch next week. Agenda covers feedback on the preliminary valuation range, preferred deal structure (strategic vs. sponsor), and timeline sensitivities given the current rate environment.',
   },
   {
     id: '3',
@@ -283,6 +294,10 @@ export const upcomingMeetings: Meeting[] = [
     owner: 'Eleanor Vance',
     ownerTitle: 'CEO',
     hasAlert: true,
+    attendees: [],
+    location: 'Unknown',
+    description:
+      'Meeting details are restricted due to confidentiality settings. Contact Eleanor Vance directly for agenda and attendee information.',
   },
 ];
 
@@ -296,6 +311,10 @@ export const previousMeetings: Meeting[] = [
     typeIcon: 'business_center',
     owner: 'Michael Chen',
     ownerTitle: 'Associate',
+    attendees: ['Michael Chen', 'Sarah Jenkins', 'Eleanor Vance (Innovatech)', 'Lisa Park (Innovatech COO)'],
+    location: 'Innovatech HQ, 550 Mission St, San Francisco',
+    description:
+      'First formal pitch to Innovatech\'s leadership team. Presented our M&A advisory credentials and initial strategic options analysis. Client was receptive to the sell-side mandate framing. Key takeaway: Eleanor emphasized timing sensitivity around their Q1 board review.',
     actionItems: ['Send updated pitch deck by Nov 1', 'Introduce CFO to Michael Chen'],
   },
   {
@@ -307,6 +326,24 @@ export const previousMeetings: Meeting[] = [
     typeIcon: 'phone',
     owner: 'Sarah Jenkins',
     ownerTitle: 'Vice President',
+    attendees: ['Sarah Jenkins', 'David Kim (Innovatech CFO)'],
+    location: 'Phone Call',
+    description:
+      'CFO David Kim called to discuss the preliminary valuation range in our proposal. He pushed back on the revenue multiple and requested comps adjusted for pure-play SaaS peers. Agreed to revise and resubmit the analysis within the week.',
     actionItems: ['Share comparable transaction analysis', 'Schedule follow-up with legal team'],
+  },
+  {
+    id: '6',
+    date: 'Oct 05, 2023',
+    title: 'Q3 Strategy Meeting',
+    type: 'internal',
+    typeLabel: 'Internal Meeting',
+    typeIcon: 'groups',
+    owner: 'Sarah Jenkins',
+    ownerTitle: 'Vice President',
+    attendees: ['Sarah Jenkins', 'James Harrison', 'Michael Chen'],
+    location: 'Internal — War Room 3B',
+    description:
+      'Internal strategy session to align on the Innovatech coverage approach. Discussed sector tailwinds in enterprise AI, Innovatech\'s competitive moat, and how to position against Goldman and Morgan Stanley who are also circling the mandate.',
   },
 ];
