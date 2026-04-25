@@ -1,0 +1,7 @@
+/// <reference types="@cloudflare/workers-types" />
+
+export const onRequestGet: PagesFunction = async () => {
+  return new Response(JSON.stringify({ status: 'ok' }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+};

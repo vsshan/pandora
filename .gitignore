@@ -5,3 +5,4 @@ ext/
 node_modules/
 dist/
 .env
+.wrangler/
