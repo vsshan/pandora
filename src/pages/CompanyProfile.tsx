@@ -5,8 +5,9 @@ import PodcastButton from '../components/PodcastButton';
 import PodcastPlayer from '../components/PodcastPlayer';
 import MiniPodcastPlayer from '../components/MiniPodcastPlayer';
 import { usePodcast } from '../hooks/usePodcast';
-import MeetingPrepPlayer from '../components/MeetingPrepPlayer';
-import { useMeetingPrep } from '../hooks/useMeetingPrep';
+import PrepInsightsButton from '../components/PrepInsightsButton';
+import MeetingPrepInsights from '../components/MeetingPrepInsights';
+import { usePrepInsights } from '../hooks/usePrepInsights';
 import {
   innovatech,
   recentActivity,
@@ -275,12 +276,8 @@ function MeetingsTab() {
   const [playerOpen, setPlayerOpen] = useState(false);
   const { session, generate, dismiss } = usePodcast();
 
-  const [activePrepId, setActivePrepId] = useState<string | null>(null);
-  const activePrepMeeting =
-    activePrepId != null
-      ? upcomingMeetings.find((m) => m.id === activePrepId) ?? null
-      : null;
-  const { state: prepState, start, pause, resume, stop } = useMeetingPrep(activePrepMeeting);
+  const { session: prepSession, generate: prepGenerate, dismiss: prepDismiss } = usePrepInsights();
+  const [prepPanelOpen, setPrepPanelOpen] = useState(false);
 
   const meetings = filter === 'upcoming' ? upcomingMeetings : previousMeetings;
   const allMeetings = [...upcomingMeetings, ...previousMeetings];
@@ -301,16 +298,6 @@ function MeetingsTab() {
     'client-meeting': 'bg-secondary/10 text-secondary dark:bg-secondary/20',
     'no-visibility': 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300',
   };
-
-  function handlePrepClick(meetingId: string) {
-    stop();
-    setActivePrepId(meetingId);
-  }
-
-  function handleStop() {
-    stop();
-    setActivePrepId(null);
-  }
 
   return (
     <>
@@ -346,8 +333,11 @@ function MeetingsTab() {
                 key={tab.id}
                 type="button"
                 onClick={() => {
-                  if (tab.id !== 'upcoming') handleStop();
                   setFilter(tab.id);
+                  if (tab.id !== 'upcoming') {
+                    setPrepPanelOpen(false);
+                    prepDismiss();
+                  }
                 }}
                 className={`flex-1 rounded-md py-2 text-sm font-semibold transition-all ${
                   filter === tab.id
@@ -364,72 +354,80 @@ function MeetingsTab() {
         {/* Meeting List */}
         <div className="mt-4 space-y-3 px-4">
           {filtered.map((meeting) => (
-            <div
-              key={meeting.id}
-              className="overflow-hidden rounded-xl bg-card-light dark:bg-card-dark shadow-sm"
-            >
-              <div className="p-4">
-                <p className="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary mb-2">
-                  {meeting.date}
-                </p>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0 pr-3">
-                    <h4 className="text-base font-bold text-text-light-primary dark:text-text-dark-primary">
-                      {meeting.title}
-                    </h4>
-                    <div
-                      className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium ${meetingTypeColors[meeting.type]}`}
-                    >
-                      <Icon name={meeting.typeIcon} filled className="text-sm" />
-                      <span>{meeting.typeLabel}</span>
+            <div key={meeting.id}>
+              <div className="overflow-hidden rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
+                <div className="p-4">
+                  <p className="text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary mb-2">
+                    {meeting.date}
+                  </p>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0 pr-3">
+                      <h4 className="text-base font-bold text-text-light-primary dark:text-text-dark-primary">
+                        {meeting.title}
+                      </h4>
+                      <div
+                        className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium ${meetingTypeColors[meeting.type]}`}
+                      >
+                        <Icon name={meeting.typeIcon} filled className="text-sm" />
+                        <span>{meeting.typeLabel}</span>
+                      </div>
                     </div>
+                    {meeting.hasAlert && (
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500" />
+                    )}
                   </div>
-                  {meeting.hasAlert && (
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500" />
+                  <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
+                    <p className="text-xs font-medium uppercase tracking-wide text-text-light-secondary dark:text-text-dark-secondary">
+                      Owner
+                    </p>
+                    <p className="mt-0.5 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+                      {meeting.owner},{' '}
+                      <span className="font-medium">{meeting.ownerTitle}</span>
+                    </p>
+                  </div>
+                  {/* Podcast button */}
+                  <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
+                    <PodcastButton
+                      meeting={meeting}
+                      session={session}
+                      onGenerate={generate}
+                      onOpen={() => setPlayerOpen(true)}
+                    />
+                  </div>
+                  {/* Meeting Prep Insights — upcoming meetings only */}
+                  {filter === 'upcoming' && (
+                    <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
+                      <PrepInsightsButton
+                        meeting={meeting}
+                        session={prepSession}
+                        isPanelOpen={
+                          prepPanelOpen && prepSession?.meetingId === meeting.id
+                        }
+                        onGenerate={(m) => {
+                          prepGenerate(m);
+                          setPrepPanelOpen(true);
+                        }}
+                        onToggle={() => setPrepPanelOpen((prev) => !prev)}
+                      />
+                    </div>
                   )}
-                </div>
-                <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
-                  <p className="text-xs font-medium uppercase tracking-wide text-text-light-secondary dark:text-text-dark-secondary">
-                    Owner
-                  </p>
-                  <p className="mt-0.5 text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
-                    {meeting.owner},{' '}
-                    <span className="font-medium">{meeting.ownerTitle}</span>
-                  </p>
-                </div>
-                {/* Podcast button */}
-                <div className="mt-3 border-t border-border-light dark:border-border-dark pt-3">
-                  <PodcastButton
-                    meeting={meeting}
-                    session={session}
-                    onGenerate={generate}
-                    onOpen={() => setPlayerOpen(true)}
-                  />
                 </div>
               </div>
 
-              {/* Meeting Prep — upcoming meetings only */}
-              {filter === 'upcoming' && (
-                <div className="mt-3">
-                  {activePrepId !== meeting.id ? (
-                    <button
-                      type="button"
-                      onClick={() => handlePrepClick(meeting.id)}
-                      className="flex items-center gap-1.5 rounded-lg bg-accent/10 px-3 py-2 text-sm font-semibold text-accent hover:bg-accent hover:text-white dark:hover:text-primary transition-colors"
-                    >
-                      <span aria-hidden="true">🎧</span> Meeting Prep
-                    </button>
-                  ) : (
-                    <MeetingPrepPlayer
-                      state={prepState}
-                      onStart={start}
-                      onPause={pause}
-                      onResume={resume}
-                      onStop={handleStop}
-                    />
-                  )}
-                </div>
-              )}
+              {/* Prep Insights panel — expands below the card */}
+              {filter === 'upcoming' &&
+                prepSession?.status === 'ready' &&
+                prepPanelOpen &&
+                prepSession.meetingId === meeting.id &&
+                prepSession.data && (
+                  <MeetingPrepInsights
+                    data={prepSession.data}
+                    onDismiss={() => {
+                      setPrepPanelOpen(false);
+                      prepDismiss();
+                    }}
+                  />
+                )}
             </div>
           ))}
 
