@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
+import ContactsGraph from '../components/ContactsGraph';
 import PodcastButton from '../components/PodcastButton';
 import PodcastPlayer from '../components/PodcastPlayer';
 import MiniPodcastPlayer from '../components/MiniPodcastPlayer';
@@ -488,19 +489,7 @@ function MeetingsTab() {
 // ─── Contacts Tab ──────────────────────────────────────────────────────────────
 
 function ContactsTab() {
-  return (
-    <main className="flex-1 p-4">
-      <div className="flex flex-col items-center justify-center rounded-xl bg-card-light dark:bg-card-dark p-12 text-center shadow-sm">
-        <Icon name="contacts" className="text-5xl text-text-light-secondary dark:text-text-dark-secondary" />
-        <p className="mt-4 text-base font-bold text-text-light-primary dark:text-text-dark-primary">
-          Contacts
-        </p>
-        <p className="mt-1 text-sm text-text-light-secondary dark:text-text-dark-secondary">
-          Key contacts for Innovatech Solutions will appear here.
-        </p>
-      </div>
-    </main>
-  );
+  return <ContactsGraph companyId="innovatech" />;
 }
 
 // ─── Coverage sub-tabs: News, Insights, Products ───────────────────────────────

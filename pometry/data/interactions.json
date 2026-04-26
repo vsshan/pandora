@@ -1,0 +1,1204 @@
+{
+  "interactions": [
+    {
+      "id": "i001",
+      "timestamp": "2026-04-18T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Q1 results debrief and M&A pipeline discussion"
+    },
+    {
+      "id": "i002",
+      "timestamp": "2026-04-05T14:30:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Follow-up on board presentation timeline"
+    },
+    {
+      "id": "i003",
+      "timestamp": "2026-03-20T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Strategic options review \u2014 Series D vs IPO path"
+    },
+    {
+      "id": "i004",
+      "timestamp": "2026-03-08T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "eleanor_vance",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Intro call re: secondary market opportunities"
+    },
+    {
+      "id": "i005",
+      "timestamp": "2026-02-25T15:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Financial model walk-through with CFO present"
+    },
+    {
+      "id": "i006",
+      "timestamp": "2026-02-10T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "dinner",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Annual client dinner \u2014 relationship building"
+    },
+    {
+      "id": "i007",
+      "timestamp": "2026-01-28T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Year-end check-in and 2026 priorities"
+    },
+    {
+      "id": "i008",
+      "timestamp": "2026-01-15T09:30:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Comparable company analysis presentation"
+    },
+    {
+      "id": "i009",
+      "timestamp": "2025-12-10T13:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Q4 pipeline review and year-end planning"
+    },
+    {
+      "id": "i010",
+      "timestamp": "2025-11-05T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Post-earnings follow-up"
+    },
+    {
+      "id": "i011",
+      "timestamp": "2025-10-15T15:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "eleanor_vance",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Q3 board prep session"
+    },
+    {
+      "id": "i012",
+      "timestamp": "2026-04-02T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "david_kim",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "Quick catch-up on Q1 close"
+    },
+    {
+      "id": "i013",
+      "timestamp": "2025-12-18T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "david_kim",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "FY budget finalisation discussion"
+    },
+    {
+      "id": "i014",
+      "timestamp": "2025-11-25T10:30:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "david_kim",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "Working capital review"
+    },
+    {
+      "id": "i015",
+      "timestamp": "2025-11-05T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "david_kim",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Refinancing options deep-dive"
+    },
+    {
+      "id": "i016",
+      "timestamp": "2025-10-10T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "david_kim",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "Monthly treasury update"
+    },
+    {
+      "id": "i017",
+      "timestamp": "2025-09-20T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "david_kim",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Half-year financial review"
+    },
+    {
+      "id": "i018",
+      "timestamp": "2025-08-08T15:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "david_kim",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "Credit facility renewal prep"
+    },
+    {
+      "id": "i019",
+      "timestamp": "2026-03-15T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "lisa_park",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Operational efficiency benchmarking"
+    },
+    {
+      "id": "i020",
+      "timestamp": "2026-02-20T14:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "lisa_park",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Supply chain financing discussion"
+    },
+    {
+      "id": "i021",
+      "timestamp": "2025-12-05T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "lisa_park",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Year-end operational review"
+    },
+    {
+      "id": "i022",
+      "timestamp": "2025-09-10T13:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "lisa_park",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Intro to new coverage team"
+    },
+    {
+      "id": "i023",
+      "timestamp": "2026-02-28T09:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "marcus_huang",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "innovatech",
+      "notes": "Tech roadmap and capex planning"
+    },
+    {
+      "id": "i024",
+      "timestamp": "2025-11-15T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "marcus_huang",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "innovatech",
+      "notes": "Cloud infrastructure financing"
+    },
+    {
+      "id": "i025",
+      "timestamp": "2025-08-20T10:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "marcus_huang",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "innovatech",
+      "notes": "R&D investment structuring"
+    },
+    {
+      "id": "i026",
+      "timestamp": "2026-03-28T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "sophie_adler",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "innovatech",
+      "notes": "Revenue growth strategy call"
+    },
+    {
+      "id": "i027",
+      "timestamp": "2026-01-10T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "paul_nguyen",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "innovatech",
+      "notes": "Corporate development roadmap"
+    },
+    {
+      "id": "i028",
+      "timestamp": "2025-10-20T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "rachel_stone",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "innovatech",
+      "notes": "Debt covenant review"
+    },
+    {
+      "id": "i029",
+      "timestamp": "2026-03-05T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Brief Q4 check-in"
+    },
+    {
+      "id": "i030",
+      "timestamp": "2025-12-15T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Annual strategy review"
+    },
+    {
+      "id": "i031",
+      "timestamp": "2025-11-28T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "M&A financing options"
+    },
+    {
+      "id": "i032",
+      "timestamp": "2025-11-10T09:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "nina_foster",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "quantum",
+      "notes": "Follow-up on term sheet"
+    },
+    {
+      "id": "i033",
+      "timestamp": "2025-10-25T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Earnings prep discussion"
+    },
+    {
+      "id": "i034",
+      "timestamp": "2025-10-08T11:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Q3 financial review"
+    },
+    {
+      "id": "i035",
+      "timestamp": "2025-09-20T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "nina_foster",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "quantum",
+      "notes": "Refinancing roadshow prep"
+    },
+    {
+      "id": "i036",
+      "timestamp": "2025-09-05T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "nina_foster",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Post-summer reactivation call"
+    },
+    {
+      "id": "i037",
+      "timestamp": "2026-02-15T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "raj_patel",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Leadership transition briefing"
+    },
+    {
+      "id": "i038",
+      "timestamp": "2025-11-10T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "raj_patel",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "quantum",
+      "notes": "Sector landscape discussion"
+    },
+    {
+      "id": "i039",
+      "timestamp": "2025-08-20T09:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "raj_patel",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "quantum",
+      "notes": "Intro to new M&A product"
+    },
+    {
+      "id": "i040",
+      "timestamp": "2026-01-20T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "tom_bradley",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "quantum",
+      "notes": "Competitive positioning analysis"
+    },
+    {
+      "id": "i041",
+      "timestamp": "2025-10-05T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "tom_bradley",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "quantum",
+      "notes": "Strategic options call"
+    },
+    {
+      "id": "i042",
+      "timestamp": "2025-12-01T11:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "claire_xu",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "quantum",
+      "notes": "Technology M&A screening"
+    },
+    {
+      "id": "i043",
+      "timestamp": "2025-11-15T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "derek_miles",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "quantum",
+      "notes": "Operations debrief"
+    },
+    {
+      "id": "i044",
+      "timestamp": "2025-09-10T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "sasha_burns",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "quantum",
+      "notes": "Corporate development intro"
+    },
+    {
+      "id": "i045",
+      "timestamp": "2026-01-08T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "helen_grant",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "quantum",
+      "notes": "Investor relations update"
+    },
+    {
+      "id": "i046",
+      "timestamp": "2025-12-20T09:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "fiona_blake",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "quantum",
+      "notes": "Finance team intro meeting"
+    },
+    {
+      "id": "i047",
+      "timestamp": "2026-04-20T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Strategic options \u2014 acquisition targets shortlist"
+    },
+    {
+      "id": "i048",
+      "timestamp": "2026-04-08T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Board narrative preparation"
+    },
+    {
+      "id": "i049",
+      "timestamp": "2026-03-25T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Valuation framework presentation"
+    },
+    {
+      "id": "i050",
+      "timestamp": "2026-03-12T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "atlas",
+      "notes": "Introduction to sector specialists"
+    },
+    {
+      "id": "i051",
+      "timestamp": "2026-02-28T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Full coverage kick-off"
+    },
+    {
+      "id": "i052",
+      "timestamp": "2025-12-18T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_james_okafor",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Initial coverage intro \u2014 healthcare sector"
+    },
+    {
+      "id": "i053",
+      "timestamp": "2026-04-15T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "sarah_novak",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "atlas",
+      "notes": "Financial due diligence prep"
+    },
+    {
+      "id": "i054",
+      "timestamp": "2026-03-28T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "sarah_novak",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "atlas",
+      "notes": "Debt capacity analysis"
+    },
+    {
+      "id": "i055",
+      "timestamp": "2026-02-12T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "sarah_novak",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "atlas",
+      "notes": "Treasury and liquidity review"
+    },
+    {
+      "id": "i056",
+      "timestamp": "2026-04-10T11:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "brendan_walsh",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "atlas",
+      "notes": "Regulatory approval process walkthrough"
+    },
+    {
+      "id": "i057",
+      "timestamp": "2026-03-18T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "brendan_walsh",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "atlas",
+      "notes": "Compliance framework for M&A"
+    },
+    {
+      "id": "i058",
+      "timestamp": "2026-04-22T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "mei_lin",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "atlas",
+      "notes": "Operational integration planning"
+    },
+    {
+      "id": "i059",
+      "timestamp": "2026-04-01T09:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "mei_lin",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "atlas",
+      "notes": "Supply chain and ops discussion"
+    },
+    {
+      "id": "i060",
+      "timestamp": "2026-02-05T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "oliver_jones",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "atlas",
+      "notes": "Digital health tech landscape"
+    },
+    {
+      "id": "i061",
+      "timestamp": "2026-03-05T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "grace_hall",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "atlas",
+      "notes": "Corporate dev priorities 2026"
+    },
+    {
+      "id": "i062",
+      "timestamp": "2026-02-18T11:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "noah_harris",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "atlas",
+      "notes": "Growth strategy alignment"
+    },
+    {
+      "id": "i063",
+      "timestamp": "2026-04-05T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "isabelle_petit",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "atlas",
+      "notes": "Budget and capex planning"
+    },
+    {
+      "id": "i064",
+      "timestamp": "2026-01-25T10:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "sam_obi",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "atlas",
+      "notes": "Stakeholder coordination meeting"
+    },
+    {
+      "id": "i065",
+      "timestamp": "2026-03-22T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "vera_ilyina",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "atlas",
+      "notes": "IR strategy for upcoming roadshow"
+    },
+    {
+      "id": "i066",
+      "timestamp": "2026-04-02T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "diana_ross",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "meridian",
+      "notes": "Q1 deal flow review"
+    },
+    {
+      "id": "i067",
+      "timestamp": "2026-01-15T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "diana_ross",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "meridian",
+      "notes": "Q4 portfolio update and new mandates"
+    },
+    {
+      "id": "i068",
+      "timestamp": "2025-10-10T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "diana_ross",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "meridian",
+      "notes": "Q3 strategy discussion"
+    },
+    {
+      "id": "i069",
+      "timestamp": "2025-07-08T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "diana_ross",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "meridian",
+      "notes": "Mid-year deal pipeline"
+    },
+    {
+      "id": "i070",
+      "timestamp": "2026-03-20T14:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "kevin_chen",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "meridian",
+      "notes": "Sector screening update"
+    },
+    {
+      "id": "i071",
+      "timestamp": "2025-12-15T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "kevin_chen",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "meridian",
+      "notes": "Year-end deal structuring"
+    },
+    {
+      "id": "i072",
+      "timestamp": "2025-09-10T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "kevin_chen",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "meridian",
+      "notes": "Portfolio company financing"
+    },
+    {
+      "id": "i073",
+      "timestamp": "2026-02-15T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "priya_mehta",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "meridian",
+      "notes": "Investment committee prep"
+    },
+    {
+      "id": "i074",
+      "timestamp": "2025-11-20T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "priya_mehta",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "meridian",
+      "notes": "Term sheet negotiation"
+    },
+    {
+      "id": "i075",
+      "timestamp": "2025-08-12T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "priya_mehta",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "meridian",
+      "notes": "Deal origination discussion"
+    },
+    {
+      "id": "i076",
+      "timestamp": "2026-01-25T10:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "carlos_ruiz",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "meridian",
+      "notes": "New mandate exploration"
+    },
+    {
+      "id": "i077",
+      "timestamp": "2025-10-20T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "felix_hartmann",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "meridian",
+      "notes": "Deal structure workshop"
+    },
+    {
+      "id": "i078",
+      "timestamp": "2025-12-05T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "natasha_wright",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "meridian",
+      "notes": "Fund accounting review"
+    },
+    {
+      "id": "i079",
+      "timestamp": "2026-03-10T09:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "alice_morgan",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "meridian",
+      "notes": "Junior team briefing"
+    },
+    {
+      "id": "i080",
+      "timestamp": "2025-09-25T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "henry_booth",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "meridian",
+      "notes": "LP relations update"
+    },
+    {
+      "id": "i081",
+      "timestamp": "2026-04-08T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "andrea_bell",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "apex",
+      "notes": "Business development partnership"
+    },
+    {
+      "id": "i082",
+      "timestamp": "2026-03-25T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_amara_osei",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "apex",
+      "notes": "Pipeline financing review"
+    },
+    {
+      "id": "i083",
+      "timestamp": "2026-02-25T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "patrick_stern",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "apex",
+      "notes": "Q4 financial close"
+    },
+    {
+      "id": "i084",
+      "timestamp": "2026-01-20T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_amara_osei",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "apex",
+      "notes": "2026 capital strategy"
+    },
+    {
+      "id": "i085",
+      "timestamp": "2025-12-20T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "rina_kobayashi",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "apex",
+      "notes": "Clinical trial funding structure"
+    },
+    {
+      "id": "i086",
+      "timestamp": "2025-11-10T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "patrick_stern",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "apex",
+      "notes": "Convertible note refinancing"
+    },
+    {
+      "id": "i087",
+      "timestamp": "2025-10-15T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_amara_osei",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "apex",
+      "notes": "Q3 milestones update"
+    },
+    {
+      "id": "i088",
+      "timestamp": "2025-09-15T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "david_oduya",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "apex",
+      "notes": "Ops and manufacturing capex"
+    },
+    {
+      "id": "i089",
+      "timestamp": "2025-07-20T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "dr_amara_osei",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "apex",
+      "notes": "Mid-year strategy review"
+    },
+    {
+      "id": "i090",
+      "timestamp": "2025-12-08T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "zara_patel",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "apex",
+      "notes": "Investor roadshow prep"
+    },
+    {
+      "id": "i091",
+      "timestamp": "2026-04-18T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "george_hayes",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "norwood",
+      "notes": "Term sheet negotiation \u2014 debt financing"
+    },
+    {
+      "id": "i092",
+      "timestamp": "2026-04-10T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "linda_wu",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "norwood",
+      "notes": "Financial model Q&A"
+    },
+    {
+      "id": "i093",
+      "timestamp": "2026-03-28T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "george_hayes",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "norwood",
+      "notes": "Mandate signing and kickoff"
+    },
+    {
+      "id": "i094",
+      "timestamp": "2026-03-15T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "linda_wu",
+      "interaction_type": "meeting",
+      "banker": "Caroline Swift",
+      "company_id": "norwood",
+      "notes": "Treasury and hedging strategy"
+    },
+    {
+      "id": "i095",
+      "timestamp": "2026-03-05T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "luke_davis",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "norwood",
+      "notes": "Corporate dev intro"
+    },
+    {
+      "id": "i096",
+      "timestamp": "2026-02-20T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "george_hayes",
+      "interaction_type": "call",
+      "banker": "Alex Thornton",
+      "company_id": "norwood",
+      "notes": "Initial coverage pitch"
+    },
+    {
+      "id": "i097",
+      "timestamp": "2026-02-10T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "ethan_brooks",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "norwood",
+      "notes": "Asset base and capex review"
+    },
+    {
+      "id": "i098",
+      "timestamp": "2026-01-22T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "hana_kim",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "norwood",
+      "notes": "Strategy team introduction"
+    },
+    {
+      "id": "i099",
+      "timestamp": "2025-12-15T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "george_hayes",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "norwood",
+      "notes": "Warm intro via referral"
+    },
+    {
+      "id": "i100",
+      "timestamp": "2026-04-05T11:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "sofia_garcia",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "norwood",
+      "notes": "Operations overview"
+    },
+    {
+      "id": "i101",
+      "timestamp": "2026-03-12T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "mike_santos",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "blueridge",
+      "notes": "Retail sector M&A landscape"
+    },
+    {
+      "id": "i102",
+      "timestamp": "2026-01-20T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "mike_santos",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "blueridge",
+      "notes": "Strategic options for FY2026"
+    },
+    {
+      "id": "i103",
+      "timestamp": "2025-10-08T09:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "mike_santos",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "blueridge",
+      "notes": "Post-earnings check-in"
+    },
+    {
+      "id": "i104",
+      "timestamp": "2025-07-15T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "mike_santos",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "blueridge",
+      "notes": "Mid-year relationship review"
+    },
+    {
+      "id": "i105",
+      "timestamp": "2025-12-20T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "jane_holt",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "blueridge",
+      "notes": "Year-end treasury review"
+    },
+    {
+      "id": "i106",
+      "timestamp": "2025-09-15T10:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "jane_holt",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "blueridge",
+      "notes": "Refinancing options"
+    },
+    {
+      "id": "i107",
+      "timestamp": "2025-06-10T09:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "jane_holt",
+      "interaction_type": "meeting",
+      "banker": "Marcus Webb",
+      "company_id": "blueridge",
+      "notes": "H1 financial review"
+    },
+    {
+      "id": "i108",
+      "timestamp": "2026-02-05T10:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "roberto_silva",
+      "interaction_type": "call",
+      "banker": "Priyanka Rao",
+      "company_id": "blueridge",
+      "notes": "Supply chain financing"
+    },
+    {
+      "id": "i109",
+      "timestamp": "2025-10-22T14:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "roberto_silva",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "blueridge",
+      "notes": "Logistics cost optimisation"
+    },
+    {
+      "id": "i110",
+      "timestamp": "2025-09-05T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "claire_dupont",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "vertex",
+      "notes": "Last BD discussion before coverage pause"
+    },
+    {
+      "id": "i111",
+      "timestamp": "2025-08-12T14:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "yuki_tanaka",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "vertex",
+      "notes": "Mid-year coverage meeting"
+    },
+    {
+      "id": "i112",
+      "timestamp": "2025-07-15T09:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "alan_morrison",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "vertex",
+      "notes": "Q2 financial update"
+    },
+    {
+      "id": "i113",
+      "timestamp": "2025-07-01T10:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "peter_walsh",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "vertex",
+      "notes": "Tech capex discussion"
+    },
+    {
+      "id": "i114",
+      "timestamp": "2025-06-20T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "yuki_tanaka",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "vertex",
+      "notes": "Refinancing pre-screening"
+    },
+    {
+      "id": "i115",
+      "timestamp": "2026-04-22T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "victor_stone",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "pinnacle",
+      "notes": "First coverage meeting \u2014 sector intro"
+    },
+    {
+      "id": "i116",
+      "timestamp": "2026-04-18T14:00:00Z",
+      "from_id": "caroline_swift",
+      "to_id": "julia_mann",
+      "interaction_type": "call",
+      "banker": "Caroline Swift",
+      "company_id": "pinnacle",
+      "notes": "Finance team introduction"
+    },
+    {
+      "id": "i117",
+      "timestamp": "2026-04-15T09:00:00Z",
+      "from_id": "priyanka_rao",
+      "to_id": "leon_adeyemi",
+      "interaction_type": "meeting",
+      "banker": "Priyanka Rao",
+      "company_id": "pinnacle",
+      "notes": "Tech landscape discussion"
+    },
+    {
+      "id": "i118",
+      "timestamp": "2026-04-12T11:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "sarah_jenkins",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "pinnacle",
+      "notes": "Initial ops introduction"
+    },
+    {
+      "id": "i119",
+      "timestamp": "2026-04-24T10:00:00Z",
+      "from_id": "alex_thornton",
+      "to_id": "svetlana_morozova",
+      "interaction_type": "meeting",
+      "banker": "Alex Thornton",
+      "company_id": "clearpath",
+      "notes": "Cold outreach intro \u2014 logistics sector coverage"
+    },
+    {
+      "id": "i120",
+      "timestamp": "2026-04-14T14:00:00Z",
+      "from_id": "marcus_webb",
+      "to_id": "kwame_asante",
+      "interaction_type": "call",
+      "banker": "Marcus Webb",
+      "company_id": "clearpath",
+      "notes": "Warm intro via Meridian referral"
+    }
+  ]
+}

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx watch server/index.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
+    "dev:pometry": "cd pometry && uvicorn main:app --reload --port 8000",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\" \"npm run dev:pometry\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler pages deploy dist --project-name pandora-cvv"
