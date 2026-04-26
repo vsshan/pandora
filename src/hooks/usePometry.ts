@@ -17,6 +17,12 @@ interface PometryState {
   error: string | null;
 }
 
+// In dev, VITE_POMETRY_URL is unset so calls go through the Express proxy at /api/pometry.
+// In production (Render), set VITE_POMETRY_URL to the Python service's public URL.
+const BASE = import.meta.env.VITE_POMETRY_URL
+  ? `${import.meta.env.VITE_POMETRY_URL}`
+  : '/api/pometry';
+
 export function usePometry(companyId?: string) {
   const [state, setState] = useState<PometryState>({
     status: 'idle',
@@ -34,10 +40,10 @@ export function usePometry(companyId?: string) {
       const qs = companyId ? `?company_id=${encodeURIComponent(companyId)}` : '';
 
       const [overviewRes, contactsRes, timelineRes, trendsRes] = await Promise.all([
-        fetch('/api/pometry/network-overview'),
-        fetch(`/api/pometry/contacts${qs}`),
-        fetch('/api/pometry/timeline?limit=15'),
-        fetch('/api/pometry/trends'),
+        fetch(`${BASE}/network-overview`),
+        fetch(`${BASE}/contacts${qs}`),
+        fetch(`${BASE}/timeline?limit=15`),
+        fetch(`${BASE}/trends`),
       ]);
 
       if (!overviewRes.ok || !contactsRes.ok) {

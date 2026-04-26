@@ -1,4 +1,5 @@
 """FastAPI service exposing Raphtory CRM graph analytics."""
+import os
 from contextlib import asynccontextmanager
 from typing import Optional
 
@@ -26,9 +27,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Pandora Pometry Service", lifespan=lifespan)
 
+# ALLOW_ORIGIN env var accepts a comma-separated list of origins.
+# Set to "*" on Render to allow the static site to call this service.
+_raw_origins = os.environ.get("ALLOW_ORIGIN", "http://localhost:5173,http://localhost:3001")
+_allow_origins = [o.strip() for o in _raw_origins.split(",")]
+_allow_all = "*" in _allow_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3001"],
+    allow_origins=["*"] if _allow_all else _allow_origins,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
