@@ -1,0 +1,8 @@
+raphtory
+google-adk[litellm]
+litellm
+fastapi
+uvicorn[standard]
+pydantic
+faker
+python-dotenv
