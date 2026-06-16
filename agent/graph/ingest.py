@@ -5,7 +5,6 @@ Run with:
     python -m agent.graph.ingest
 """
 
-import json
 import os
 import sys
 import time
@@ -70,10 +69,10 @@ def build_graph(data: dict) -> Graph:
 
     print("  Adding bankers...")
     for b in data["bankers"]:
-        g.add_vertex(
-            b["created_at"],
-            b["id"],
-            {
+        g.add_node(
+            timestamp=b["created_at"],
+            id=b["id"],
+            properties={
                 "vertex_type": VERTEX_BANKER,
                 PROP_BANKER_NAME: b["name"],
                 PROP_BANKER_BANK: b["bank"],
@@ -84,10 +83,10 @@ def build_graph(data: dict) -> Graph:
 
     print("  Adding contacts...")
     for c in data["contacts"]:
-        g.add_vertex(
-            c["created_at"],
-            c["id"],
-            {
+        g.add_node(
+            timestamp=c["created_at"],
+            id=c["id"],
+            properties={
                 "vertex_type": VERTEX_CONTACT,
                 PROP_CONTACT_NAME: c["name"],
                 PROP_CONTACT_COMPANY: c["company"],
@@ -101,10 +100,10 @@ def build_graph(data: dict) -> Graph:
 
     print("  Adding deals...")
     for d in data["deals"]:
-        g.add_vertex(
-            d["timestamp"],
-            d["id"],
-            {
+        g.add_node(
+            timestamp=d["timestamp"],
+            id=d["id"],
+            properties={
                 "vertex_type": VERTEX_DEAL,
                 PROP_DEAL_NAME: d["name"],
                 PROP_DEAL_TYPE: d["type"],
@@ -113,24 +112,28 @@ def build_graph(data: dict) -> Graph:
                 PROP_DEAL_VALUE: d["value_usd"],
             },
         )
-        # Banker manages deal
         g.add_edge(
-            d["timestamp"],
-            d["banker_id"],
-            d["id"],
-            {PROP_DEAL_NAME: d["name"]},
-            EDGE_MANAGING_DEAL,
+            timestamp=d["timestamp"],
+            src=d["banker_id"],
+            dst=d["id"],
+            properties={PROP_DEAL_NAME: d["name"]},
+            layer=EDGE_MANAGING_DEAL,
         )
-        # Contacts in deal
         for cid in d["contact_ids"]:
-            g.add_edge(d["timestamp"], cid, d["id"], {}, EDGE_IN_DEAL)
+            g.add_edge(
+                timestamp=d["timestamp"],
+                src=cid,
+                dst=d["id"],
+                properties={},
+                layer=EDGE_IN_DEAL,
+            )
 
     print("  Adding campaigns...")
     for camp in data["campaigns"]:
-        g.add_vertex(
-            camp["timestamp"],
-            camp["id"],
-            {
+        g.add_node(
+            timestamp=camp["timestamp"],
+            id=camp["id"],
+            properties={
                 "vertex_type": VERTEX_CAMPAIGN,
                 PROP_CAMPAIGN_NAME: camp["name"],
                 PROP_CAMPAIGN_TYPE: camp["type"],
@@ -138,14 +141,20 @@ def build_graph(data: dict) -> Graph:
             },
         )
         for cid in camp["contact_ids"]:
-            g.add_edge(camp["timestamp"], cid, camp["id"], {}, EDGE_IN_CAMPAIGN)
+            g.add_edge(
+                timestamp=camp["timestamp"],
+                src=cid,
+                dst=camp["id"],
+                properties={},
+                layer=EDGE_IN_CAMPAIGN,
+            )
 
     print("  Adding events...")
     for ev in data["events"]:
-        g.add_vertex(
-            ev["timestamp"],
-            ev["id"],
-            {
+        g.add_node(
+            timestamp=ev["timestamp"],
+            id=ev["id"],
+            properties={
                 "vertex_type": VERTEX_EVENT,
                 PROP_EVENT_NAME: ev["name"],
                 PROP_EVENT_TYPE: ev["type"],
@@ -154,39 +163,63 @@ def build_graph(data: dict) -> Graph:
             },
         )
         for cid in ev["attendee_ids"]:
-            g.add_edge(ev["timestamp"], cid, ev["id"], {}, EDGE_ATTENDED_EVENT)
+            g.add_edge(
+                timestamp=ev["timestamp"],
+                src=cid,
+                dst=ev["id"],
+                properties={},
+                layer=EDGE_ATTENDED_EVENT,
+            )
         for bid in ev["host_banker_ids"]:
-            g.add_edge(ev["timestamp"], bid, ev["id"], {}, EDGE_HOSTED_EVENT)
+            g.add_edge(
+                timestamp=ev["timestamp"],
+                src=bid,
+                dst=ev["id"],
+                properties={},
+                layer=EDGE_HOSTED_EVENT,
+            )
 
     print("  Adding nominations...")
     for nom in data["nominations"]:
-        g.add_vertex(
-            nom["timestamp"],
-            nom["id"],
-            {
+        g.add_node(
+            timestamp=nom["timestamp"],
+            id=nom["id"],
+            properties={
                 "vertex_type": VERTEX_NOMINATION,
                 PROP_NOMINATION_CATEGORY: nom["category"],
                 PROP_NOMINATION_STATUS: nom["status"],
                 PROP_NOMINATION_YEAR: nom["year"],
             },
         )
-        g.add_edge(nom["timestamp"], nom["contact_id"], nom["id"], {}, EDGE_NOMINATED_FOR)
-        g.add_edge(nom["timestamp"], nom["banker_id"], nom["id"], {}, EDGE_SUBMITTED_NOMINATION)
+        g.add_edge(
+            timestamp=nom["timestamp"],
+            src=nom["contact_id"],
+            dst=nom["id"],
+            properties={},
+            layer=EDGE_NOMINATED_FOR,
+        )
+        g.add_edge(
+            timestamp=nom["timestamp"],
+            src=nom["banker_id"],
+            dst=nom["id"],
+            properties={},
+            layer=EDGE_SUBMITTED_NOMINATION,
+        )
 
     print("  Adding interactions (edges)...")
     for ix in data["interactions"]:
-        props = {
+        props: dict = {
             PROP_INTERACTION_TYPE: ix["type"],
             PROP_INTERACTION_NOTES: ix["notes"],
         }
         if ix.get("duration_min") is not None:
             props[PROP_INTERACTION_DURATION] = ix["duration_min"]
         g.add_edge(
-            ix["timestamp"],
-            ix["banker_id"],
-            ix["contact_id"],
-            props,
-            EDGE_INTERACTED_WITH,
+            timestamp=ix["timestamp"],
+            src=ix["banker_id"],
+            dst=ix["contact_id"],
+            properties=props,
+            layer=EDGE_INTERACTED_WITH,
         )
 
     return g
@@ -194,8 +227,8 @@ def build_graph(data: dict) -> Graph:
 
 def print_summary(g: Graph, data: dict) -> None:
     print("\n── Graph Summary ──────────────────────────────")
-    print(f"  Vertices : {g.count_vertices():,}")
-    print(f"  Edges    : {g.count_edges():,}")
+    print(f"  Nodes  : {g.count_nodes():,}")
+    print(f"  Edges  : {g.count_edges():,}")
     print(f"\n  Bankers      : {len(data['bankers']):,}")
     print(f"  Contacts     : {len(data['contacts']):,}")
     print(f"  Deals        : {len(data['deals']):,}")

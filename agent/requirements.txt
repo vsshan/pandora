@@ -1,6 +1,6 @@
 raphtory
-google-adk[litellm]
-litellm
+google-adk[extensions]
+litellm>=1.75.5
 fastapi
 uvicorn[standard]
 pydantic

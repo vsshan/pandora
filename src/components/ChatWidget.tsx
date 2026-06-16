@@ -1,10 +1,22 @@
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, useCallback, KeyboardEvent } from 'react';
 import Icon from './Icon';
 import { useChat } from '../hooks/useChat';
 import type { ChatMessage } from '../types/chat';
+import ChatRenderer from './ChatRenderer';
 
 function MessageBubble({ msg }: { msg: ChatMessage }) {
   const isUser = msg.role === 'user';
+
+  if (!isUser && msg.ui_spec) {
+    return (
+      <div className="flex justify-start mb-3">
+        <div className="max-w-[95%] rounded-2xl rounded-bl-sm px-3 py-3 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+          <ChatRenderer spec={msg.ui_spec} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
       <div
@@ -43,12 +55,21 @@ const SUGGESTED_PROMPTS = [
   'List upcoming roadshow events',
 ];
 
+const MIN_W = 280;
+const MAX_W = 720;
+const MIN_H = 320;
+const MAX_H = 880;
+const DEFAULT_W = 320;
+const DEFAULT_H = 480;
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [size, setSize] = useState({ w: DEFAULT_W, h: DEFAULT_H });
   const { messages, isLoading, sendMessage, clearMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,6 +82,31 @@ export default function ChatWidget() {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
+
+  const startResize = useCallback((e: React.MouseEvent, edge: 'top' | 'left' | 'corner') => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startW = size.w;
+    const startH = size.h;
+
+    const onMove = (ev: MouseEvent) => {
+      const dx = startX - ev.clientX;
+      const dy = startY - ev.clientY;
+      setSize((prev) => ({
+        w: edge === 'top' ? prev.w : Math.min(MAX_W, Math.max(MIN_W, startW + dx)),
+        h: edge === 'left' ? prev.h : Math.min(MAX_H, Math.max(MIN_H, startH + dy)),
+      }));
+    };
+
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [size.w, size.h]);
 
   const handleSend = async () => {
     const trimmed = input.trim();
@@ -80,9 +126,30 @@ export default function ChatWidget() {
     <>
       {/* Chat panel */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 flex flex-col rounded-2xl shadow-2xl overflow-hidden bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"
-          style={{ height: '480px' }}
+        <div
+          ref={panelRef}
+          className="fixed bottom-24 right-6 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark"
+          style={{ width: size.w, height: size.h }}
         >
+          {/* Top resize handle */}
+          <div
+            className="absolute top-0 left-4 right-4 h-1.5 cursor-n-resize z-10 group"
+            onMouseDown={(e) => startResize(e, 'top')}
+          >
+            <div className="absolute inset-x-0 top-0.5 h-0.5 rounded-full bg-transparent group-hover:bg-white/30 transition-colors" />
+          </div>
+          {/* Left resize handle */}
+          <div
+            className="absolute left-0 top-4 bottom-4 w-1.5 cursor-w-resize z-10 group"
+            onMouseDown={(e) => startResize(e, 'left')}
+          >
+            <div className="absolute inset-y-0 left-0.5 w-0.5 rounded-full bg-transparent group-hover:bg-border-light dark:group-hover:bg-border-dark transition-colors" />
+          </div>
+          {/* Top-left corner resize handle */}
+          <div
+            className="absolute top-0 left-0 w-4 h-4 cursor-nw-resize z-20"
+            onMouseDown={(e) => startResize(e, 'corner')}
+          />
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-primary shrink-0">
             <div className="flex items-center gap-2">

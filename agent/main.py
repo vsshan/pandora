@@ -7,13 +7,16 @@ or:
     python -m uvicorn agent.main:app --port 8000
 """
 
+import json
 import os
+import re
 import uuid
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Any
 
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
@@ -55,7 +58,23 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    ui_spec: Any | None = None
     session_id: str
+
+
+def _extract_ui_spec(text: str) -> tuple[str, Any]:
+    """Try to parse the agent text as a json-render spec. Returns (fallback_text, spec_or_None)."""
+    # Strip markdown code fences if present
+    stripped = text.strip()
+    stripped = re.sub(r'^```(?:json)?\s*', '', stripped)
+    stripped = re.sub(r'\s*```$', '', stripped.strip())
+    try:
+        obj = json.loads(stripped)
+        if isinstance(obj, dict) and "root" in obj and "elements" in obj:
+            return "", obj
+    except (json.JSONDecodeError, ValueError):
+        pass
+    return text, None
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -100,4 +119,6 @@ async def chat(req: ChatRequest):
                 if hasattr(part, "text") and part.text:
                     final_text += part.text
 
-    return ChatResponse(response=final_text.strip(), session_id=session_id)
+    raw = final_text.strip()
+    fallback_text, ui_spec = _extract_ui_spec(raw)
+    return ChatResponse(response=fallback_text, ui_spec=ui_spec, session_id=session_id)

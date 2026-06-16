@@ -25,7 +25,7 @@ export function useChat(): UseChatReturn {
         body: JSON.stringify({ message: content, session_id: sessionId }),
       });
 
-      const data: { response?: string; session_id?: string; error?: string } = await res.json();
+      const data: { response?: string; ui_spec?: unknown; session_id?: string; error?: string } = await res.json();
 
       if (!res.ok || data.error) {
         throw new Error(data.error ?? `Server error ${res.status}`);
@@ -38,6 +38,7 @@ export function useChat(): UseChatReturn {
       const assistantMsg: ChatMessage = {
         role: 'assistant',
         content: data.response ?? '',
+        ui_spec: data.ui_spec as ChatMessage['ui_spec'],
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, assistantMsg]);

@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from raphtory import Graph
 from google.adk.agents import Agent
+from google.adk.models.lite_llm import LiteLlm
 
 from agent.graph.schema import (
     EDGE_ATTENDED_EVENT,
@@ -71,9 +72,12 @@ def _get_graph() -> Graph:
     return _graph
 
 
-def _vertex_props(v) -> dict:
-    """Flatten a Raphtory vertex's properties into a plain dict."""
-    return {k: v.properties.get(k) for k in v.properties.keys()}
+def _props(v) -> dict:
+    """Return node/edge properties as a plain dict (latest values)."""
+    try:
+        return v.properties.as_dict()
+    except Exception:
+        return {}
 
 
 # ── Tool helpers ──────────────────────────────────────────────────────────────
@@ -98,8 +102,8 @@ def search_contacts(query: str = "", tier: str = "", sector: str = "", limit: in
     q = query.lower()
     results = []
 
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") != VERTEX_CONTACT:
             continue
         name = props.get(PROP_CONTACT_NAME, "")
@@ -115,7 +119,7 @@ def search_contacts(query: str = "", tier: str = "", sector: str = "", limit: in
             continue
 
         results.append({
-            "id": str(v.id),
+            "id": v.name,
             "name": name,
             "company": company,
             "title": props.get(PROP_CONTACT_TITLE, ""),
@@ -131,48 +135,36 @@ def search_contacts(query: str = "", tier: str = "", sector: str = "", limit: in
 
 def get_contact_interactions(contact_id: str, days_back: int = 365, limit: int = 20) -> dict:
     """
-    Retrieve the interaction history for a contact (identified by their ID).
-    `days_back` controls the time window (default: last 365 days).
+    Retrieve the interaction history for a contact (identified by their ID from
+    search_contacts). `days_back` controls the time window (default: last 365 days).
     Returns banker names, interaction types, dates, and meeting notes.
     """
     g = _get_graph()
     cutoff_ms = _days_ago_ms(days_back)
     interactions = []
 
-    # Find vertex by searching for the ID string in all vertices
-    contact_vertex = None
-    for v in g.vertices:
-        if str(v.id) == contact_id:
-            contact_vertex = v
-            break
-
+    contact_vertex = g.node(contact_id)
     if contact_vertex is None:
-        return {"error": f"Contact {contact_id} not found", "interactions": []}
+        return {"error": f"Contact '{contact_id}' not found", "interactions": []}
 
-    # Walk in-edges of type INTERACTED_WITH
-    for e in contact_vertex.in_edges:
-        if e.properties.get("layer") != EDGE_INTERACTED_WITH:
-            continue
-        # Temporal filter
-        history = [
-            (ts, props)
-            for ts, props in e.properties.temporal_values()
-            if ts >= cutoff_ms
-        ]
-        for ts, props in sorted(history, reverse=True)[:limit]:
-            banker_v = g.vertex(e.src)
-            banker_name = banker_v.properties.get(PROP_BANKER_NAME, str(e.src)) if banker_v else str(e.src)
+    for e in contact_vertex.layer(EDGE_INTERACTED_WITH).in_edges:
+        banker_name = e.src.properties.get(PROP_BANKER_NAME) or e.src.name
+        edge_props = _props(e)
+        for ts in sorted(e.history.t.collect(), reverse=True):
+            if ts < cutoff_ms:
+                continue
             interactions.append({
                 "date": _ms_to_str(ts),
                 "banker": banker_name,
-                "type": props.get(PROP_INTERACTION_TYPE, ""),
-                "notes": props.get(PROP_INTERACTION_NOTES, ""),
+                "type": edge_props.get(PROP_INTERACTION_TYPE, ""),
+                "notes": edge_props.get(PROP_INTERACTION_NOTES, ""),
             })
+            if len(interactions) >= limit:
+                break
         if len(interactions) >= limit:
             break
 
-    interactions.sort(key=lambda x: x["date"], reverse=True)
-    return {"contact_id": contact_id, "count": len(interactions), "interactions": interactions[:limit]}
+    return {"contact_id": contact_id, "count": len(interactions), "interactions": interactions}
 
 
 def get_banker_portfolio(banker_name: str) -> dict:
@@ -185,8 +177,8 @@ def get_banker_portfolio(banker_name: str) -> dict:
     name_q = banker_name.lower()
 
     banker_vertex = None
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") == VERTEX_BANKER:
             if name_q in props.get(PROP_BANKER_NAME, "").lower():
                 banker_vertex = v
@@ -195,44 +187,42 @@ def get_banker_portfolio(banker_name: str) -> dict:
     if banker_vertex is None:
         return {"error": f"Banker '{banker_name}' not found"}
 
-    bprops = _vertex_props(banker_vertex)
-    contacts_reached = []
-    deals = []
-    events_hosted = []
+    bprops = _props(banker_vertex)
+    contacts_reached: list[dict] = []
+    deals: list[dict] = []
+    events_hosted: list[dict] = []
 
-    for e in banker_vertex.out_edges:
-        layer = e.properties.get("layer", "")
-        target = g.vertex(e.dst)
-        if not target:
-            continue
-        tprops = _vertex_props(target)
+    for e in banker_vertex.layer(EDGE_INTERACTED_WITH).out_edges:
+        p = _props(e.dst)
+        contacts_reached.append({
+            "id": e.dst.name,
+            "name": p.get(PROP_CONTACT_NAME, ""),
+            "company": p.get(PROP_CONTACT_COMPANY, ""),
+            "tier": p.get(PROP_CONTACT_TIER, ""),
+        })
 
-        if layer == EDGE_INTERACTED_WITH:
-            contacts_reached.append({
-                "id": str(e.dst),
-                "name": tprops.get(PROP_CONTACT_NAME, ""),
-                "company": tprops.get(PROP_CONTACT_COMPANY, ""),
-                "tier": tprops.get(PROP_CONTACT_TIER, ""),
-            })
-        elif layer == EDGE_MANAGING_DEAL:
-            deals.append({
-                "id": str(e.dst),
-                "name": tprops.get(PROP_DEAL_NAME, ""),
-                "type": tprops.get(PROP_DEAL_TYPE, ""),
-                "stage": tprops.get(PROP_DEAL_STAGE, ""),
-                "value_usd": tprops.get(PROP_DEAL_VALUE, 0),
-                "sector": tprops.get(PROP_DEAL_SECTOR, ""),
-            })
-        elif layer == EDGE_HOSTED_EVENT:
-            events_hosted.append({
-                "id": str(e.dst),
-                "name": tprops.get(PROP_EVENT_NAME, ""),
-                "type": tprops.get(PROP_EVENT_TYPE, ""),
-                "date": tprops.get(PROP_EVENT_DATE, ""),
-            })
+    for e in banker_vertex.layer(EDGE_MANAGING_DEAL).out_edges:
+        p = _props(e.dst)
+        deals.append({
+            "id": e.dst.name,
+            "name": p.get(PROP_DEAL_NAME, ""),
+            "type": p.get(PROP_DEAL_TYPE, ""),
+            "stage": p.get(PROP_DEAL_STAGE, ""),
+            "value_usd": p.get(PROP_DEAL_VALUE, 0),
+            "sector": p.get(PROP_DEAL_SECTOR, ""),
+        })
 
-    # Deduplicate contacts by id
-    seen = set()
+    for e in banker_vertex.layer(EDGE_HOSTED_EVENT).out_edges:
+        p = _props(e.dst)
+        events_hosted.append({
+            "id": e.dst.name,
+            "name": p.get(PROP_EVENT_NAME, ""),
+            "type": p.get(PROP_EVENT_TYPE, ""),
+            "date": p.get(PROP_EVENT_DATE, ""),
+        })
+
+    # Deduplicate contacts
+    seen: set[str] = set()
     unique_contacts = []
     for c in contacts_reached:
         if c["id"] not in seen:
@@ -263,8 +253,8 @@ def search_deals(query: str = "", stage: str = "", sector: str = "", deal_type: 
     q = query.lower()
     results = []
 
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") != VERTEX_DEAL:
             continue
         name = props.get(PROP_DEAL_NAME, "")
@@ -282,7 +272,7 @@ def search_deals(query: str = "", stage: str = "", sector: str = "", deal_type: 
             continue
 
         results.append({
-            "id": str(v.id),
+            "id": v.name,
             "name": name,
             "type": v_type,
             "stage": v_stage,
@@ -305,8 +295,8 @@ def get_campaign_overview(campaign_name: str = "", status: str = "", limit: int 
     q = campaign_name.lower()
     results = []
 
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") != VERTEX_CAMPAIGN:
             continue
         name = props.get(PROP_CAMPAIGN_NAME, "")
@@ -317,11 +307,10 @@ def get_campaign_overview(campaign_name: str = "", status: str = "", limit: int 
         if status and status.lower() not in v_status.lower():
             continue
 
-        # Count enrolled contacts via in-edges
-        enrolled = sum(1 for _ in v.in_edges)
+        enrolled = v.layer(EDGE_IN_CAMPAIGN).in_degree()
 
         results.append({
-            "id": str(v.id),
+            "id": v.name,
             "name": name,
             "type": props.get(PROP_CAMPAIGN_TYPE, ""),
             "status": v_status,
@@ -343,8 +332,8 @@ def search_events(query: str = "", event_type: str = "", location: str = "", lim
     q = query.lower()
     results = []
 
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") != VERTEX_EVENT:
             continue
         name = props.get(PROP_EVENT_NAME, "")
@@ -358,10 +347,10 @@ def search_events(query: str = "", event_type: str = "", location: str = "", lim
         if location and location.lower() not in v_loc.lower():
             continue
 
-        attendees = sum(1 for _ in v.in_edges)
+        attendees = v.layer(EDGE_ATTENDED_EVENT).in_degree()
 
         results.append({
-            "id": str(v.id),
+            "id": v.name,
             "name": name,
             "type": v_type,
             "location": v_loc,
@@ -378,13 +367,13 @@ def get_nominations(status: str = "", category: str = "", year: int = 0, limit: 
     """
     List client nominations. Filter by status (Pending, Approved, Rejected),
     category (e.g. 'Top Client 2024', 'Deal of the Year'), or year.
-    Returns nomination details with contact and category.
+    Returns nomination details with contact name and category.
     """
     g = _get_graph()
     results = []
 
-    for v in g.vertices:
-        props = _vertex_props(v)
+    for v in g.nodes:
+        props = _props(v)
         if props.get("vertex_type") != VERTEX_NOMINATION:
             continue
         v_status = props.get(PROP_NOMINATION_STATUS, "")
@@ -398,18 +387,13 @@ def get_nominations(status: str = "", category: str = "", year: int = 0, limit: 
         if year and year != v_year:
             continue
 
-        # Get the nominated contact
         contact_name = ""
-        for e in v.in_edges:
-            src = g.vertex(e.src)
-            if src:
-                src_props = _vertex_props(src)
-                if src_props.get("vertex_type") == VERTEX_CONTACT:
-                    contact_name = src_props.get(PROP_CONTACT_NAME, "")
-                    break
+        for e in v.layer(EDGE_NOMINATED_FOR).in_edges:
+            contact_name = e.src.properties.get(PROP_CONTACT_NAME) or e.src.name
+            break
 
         results.append({
-            "id": str(v.id),
+            "id": v.name,
             "category": v_cat,
             "status": v_status,
             "year": v_year,
@@ -429,18 +413,55 @@ a relationship management platform used by commercial bankers.
 You have access to a comprehensive CRM graph containing real-time data on:
 - **Contacts**: 50,000+ client contacts with tier ratings (A/B/C) across sectors
 - **Interactions**: 50,000+ logged meetings, calls, and emails between bankers and clients
-- **Deals**: Active and historical deal pipeline (M&A, IPO, Debt, Equity, Advisory)
+- **Deals**: Active and historical deal pipeline (M&A, IPO, Debt, Financing, Advisory)
 - **Campaigns**: Outreach campaigns with enrolled contact lists
 - **Events**: Conferences, roadshows, dinners, and webinars
 - **Nominations**: Client award and recognition nominations
 
-Answer questions with specific data from the graph. Always cite names, dates,
-and numbers when available. If a query is ambiguous, make a reasonable assumption
-and state it. Be concise and direct — bankers need actionable intelligence, not prose."""
+## Output Format
+
+ALWAYS respond with a single JSON object — never plain text. The JSON must conform to
+the json-render spec format so the UI can render rich components.
+
+Schema:
+{
+  "root": "<elem-id>",
+  "elements": {
+    "<elem-id>": {
+      "type": "<ComponentType>",
+      "props": { ... },
+      "children": ["<child-elem-id>", ...]   // optional
+    }
+  }
+}
+
+Available component types and their props:
+
+- **Stack** — vertical container. Props: `gap` (number, default 4)
+- **Text** — paragraph. Props: `content` (string), `variant` ("muted" | "default")
+- **Heading** — section heading. Props: `content` (string), `level` (1-4)
+- **Card** — info card. Props: `title` (string), `description` (string, optional)
+- **Badge** — status/tier label. Props: `label` (string), `variant` ("default" | "success" | "warning" | "destructive" | "outline")
+- **Metric** — KPI display. Props: `label` (string), `value` (string | number), `delta` (string, optional)
+- **Table** — data table. Props: `columns` (string[]), `rows` (array of string arrays)
+- **Grid** — responsive grid of cards. Props: `columns` (2 | 3 | 4), `children` uses child element IDs
+- **Accordion** — collapsible section. Props: `title` (string), `children` uses child element IDs
+
+Design guidelines:
+- For lists of contacts/deals/events: use Table
+- For a single contact/deal profile: use Stack of Card + Badge + Metric
+- For KPI summaries: use Grid of Metric elements
+- Tier A → Badge variant "success", Tier B → "warning", Tier C → "outline"
+- Deal stages: Closed Won → "success", Closed Lost → "destructive", others → "default"
+- Active campaigns → "success", Completed → "outline", Planned → "warning"
+- If an error occurs or nothing is found: use a Stack with a Text (variant "muted")
+
+Always cite names, dates, and numbers. Use the tools to get real data first, then
+build the JSON spec from the results. Return ONLY valid JSON — no markdown, no prose."""
 
 root_agent = Agent(
     name="pandora_crm_agent",
-    model="litellm/anthropic/claude-haiku-4-5-20251001",
+    model=LiteLlm(model="anthropic/claude-haiku-4-5-20251001"),
     description="Investment banking CRM assistant powered by a Raphtory graph database",
     instruction=SYSTEM_INSTRUCTION,
     tools=[
