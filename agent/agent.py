@@ -363,6 +363,56 @@ def search_events(query: str = "", event_type: str = "", location: str = "", lim
     return {"count": len(results), "events": results}
 
 
+def get_event_attendees(event_id: str = "", event_name: str = "", limit: int = 50) -> dict:
+    """
+    List the contacts attending a specific event. Identify the event by its ID
+    (from search_events) or by a name keyword. Returns each attendee's name,
+    company, title, tier, and sector.
+    """
+    g = _get_graph()
+
+    event_vertex = None
+
+    if event_id:
+        event_vertex = g.node(event_id)
+        if event_vertex is None or _props(event_vertex).get("vertex_type") != VERTEX_EVENT:
+            event_vertex = None
+
+    if event_vertex is None and event_name:
+        q = event_name.lower()
+        for v in g.nodes:
+            props = _props(v)
+            if props.get("vertex_type") == VERTEX_EVENT and q in props.get(PROP_EVENT_NAME, "").lower():
+                event_vertex = v
+                break
+
+    if event_vertex is None:
+        return {"error": "Event not found", "attendees": []}
+
+    ev_props = _props(event_vertex)
+    attendees = []
+    for e in event_vertex.layer(EDGE_ATTENDED_EVENT).in_edges:
+        p = _props(e.src)
+        attendees.append({
+            "id": e.src.name,
+            "name": p.get(PROP_CONTACT_NAME, ""),
+            "company": p.get(PROP_CONTACT_COMPANY, ""),
+            "title": p.get(PROP_CONTACT_TITLE, ""),
+            "tier": p.get(PROP_CONTACT_TIER, ""),
+            "sector": p.get(PROP_CONTACT_SECTOR, ""),
+        })
+        if len(attendees) >= limit:
+            break
+
+    return {
+        "event_id": event_vertex.name,
+        "event_name": ev_props.get(PROP_EVENT_NAME, ""),
+        "event_date": ev_props.get(PROP_EVENT_DATE, ""),
+        "count": len(attendees),
+        "attendees": attendees,
+    }
+
+
 def get_nominations(status: str = "", category: str = "", year: int = 0, limit: int = 10) -> dict:
     """
     List client nominations. Filter by status (Pending, Approved, Rejected),
@@ -471,6 +521,7 @@ root_agent = Agent(
         search_deals,
         get_campaign_overview,
         search_events,
+        get_event_attendees,
         get_nominations,
     ],
 )
