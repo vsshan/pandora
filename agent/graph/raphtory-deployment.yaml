@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raphtory-server
+  namespace: ai-agents
+spec:
+  replicas: 1   # Raphtory server is stateful — keep at 1 unless using read replicas
+  selector:
+    matchLabels:
+      app: raphtory-server
+  template:
+    metadata:
+      labels:
+        app: raphtory-server
+    spec:
+      containers:
+        - name: raphtory
+          image: localhost:5000/raphtory-crm-graph:v1
+          imagePullPolicy: Always
+          args: ["--working-dir", "/app", "--tracing-level", "complete"]
+          ports:
+            - containerPort: 1736
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "8Gi"
+              cpu: "2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: raphtory-service
+  namespace: ai-agents
+spec:
+  selector:
+    app: raphtory-server
+  ports:
+    - protocol: TCP
+      port: 1736
+      targetPort: 1736
+  type: ClusterIP   # Internal-only; agents in the same cluster reach it directly

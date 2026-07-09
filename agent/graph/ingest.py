@@ -6,6 +6,7 @@ Run with:
 """
 
 import os
+import shutil
 import sys
 import time
 
@@ -226,7 +227,7 @@ def build_graph(data: dict) -> Graph:
 
 
 def print_summary(g: Graph, data: dict) -> None:
-    print("\n── Graph Summary ──────────────────────────────")
+    print("\n== Graph Summary ==")
     print(f"  Nodes  : {g.count_nodes():,}")
     print(f"  Edges  : {g.count_edges():,}")
     print(f"\n  Bankers      : {len(data['bankers']):,}")
@@ -237,7 +238,7 @@ def print_summary(g: Graph, data: dict) -> None:
     print(f"  Nominations  : {len(data['nominations']):,}")
     print(f"  Interactions : {len(data['interactions']):,}")
     print(f"\n  Graph saved to: {GRAPH_PATH}")
-    print("────────────────────────────────────────────────\n")
+    print("=" * 48 + "\n")
 
 
 if __name__ == "__main__":
@@ -250,6 +251,8 @@ if __name__ == "__main__":
     print("\nStep 2/2  Building Raphtory graph...")
     g = build_graph(data)
 
+    if os.path.exists(GRAPH_PATH):
+        shutil.rmtree(GRAPH_PATH)
     g.save_to_file(GRAPH_PATH)
 
     print_summary(g, data)

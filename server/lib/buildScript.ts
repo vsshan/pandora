@@ -78,12 +78,12 @@ This script will be converted to speech by a text-to-speech engine, so write ent
 - Do NOT use bullet points, numbered lists, markdown, or any formatting
 - Do NOT include stage directions, speaker labels, or section headers
 - Vary sentence length to sound natural — mix short punchy sentences with longer ones
-- Target length: 800 to 1,100 words (approximately 5 to 8 minutes at a natural speaking pace of 130 words per minute)
+- Target length: 450 to 550 words (approximately 3 to 4 minutes at a natural speaking pace of 130 words per minute)
 - Tone: warm, confident, and professional — like a trusted colleague giving a thorough briefing
 
 Structure the briefing as one continuous, flowing narrative with three clear sections:
 
-SECTION 1 — TODAY'S MEETING (approximately 2 minutes / 260 words)
+SECTION 1 — TODAY'S MEETING (approximately 1 minute / 150 words)
 Introduce the upcoming meeting warmly. Cover the meeting title, date, type, who is leading it, and who will be in the room. Then expand meaningfully: explain why this meeting matters strategically given the relationship context, what the key agenda items likely are, what a successful outcome looks like, and any preparation points the banker should keep front of mind. Make the banker feel confident and prepared.
 
 Meeting details:
@@ -96,12 +96,12 @@ Location: ${meeting.location || 'not specified'}
 Context: ${meeting.description || 'No additional context provided'}
 
 SECTION 2 — LAST ${previousMeetings.length} CLIENT MEETINGS (approximately 3 minutes / 390 words)
-Walk through each previous meeting chronologically. For each one, spend 2 to 3 sentences covering what was discussed, who drove the conversation, what was decided or left unresolved, and any signals from the client. After covering all meetings, synthesize a clear narrative: what patterns are emerging in the relationship, what momentum has been built, what tensions or open questions still need to be addressed, and how today's meeting fits into the arc of the engagement.
+Walk through each previous meeting in one to two sentences: what was discussed, what was decided or left open. After all meetings, briefly synthesize the relationship arc in two to three sentences.
 
 Previous meetings:
 ${previousMeetingLines}
 
-SECTION 3 — MARKET INTELLIGENCE ON ${company.name.toUpperCase()} (approximately 2 minutes / 260 words)
+SECTION 3 — MARKET INTELLIGENCE ON ${company.name.toUpperCase()} (approximately 1 minute / 150 words)
 Brief the banker on the latest news and analyst insights. For each news item, state the headline clearly and then explain in one or two sentences why it matters for the banker-client relationship and any strategic implications. For each analyst insight, paraphrase the key finding and connect it to what the banker should watch or probe in today's conversation. Close the briefing with a motivating, natural sign-off — something brief and genuine that sends the banker into the meeting with energy.
 
 Company: ${company.name} | Sector: ${company.sector} | CEO: ${company.ceo}
@@ -115,7 +115,7 @@ ${insightLines}
 Begin the briefing now with a natural greeting (Good morning, Good afternoon, or Here is your briefing — pick the one that feels most natural). Do not label the sections — let the transitions speak for themselves.`;
 
   const message = await client.messages.create({
-    model: 'claude-3-5-haiku-20241022',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 2048,
     messages: [{ role: 'user', content: prompt }],
   });

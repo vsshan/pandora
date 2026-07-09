@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { buildPrepInsights } from '../lib/buildPrepInsights.js';
+import { buildInsightsNarration } from '../lib/buildInsightsNarration.js';
+import { synthesizeSpeech } from '../lib/synthesizeSpeech.js';
+import type { PrepInsightsOutput } from '../lib/buildPrepInsights.js';
 
 const router = Router();
 
@@ -48,6 +51,38 @@ router.post('/generate', async (req: Request, res: Response) => {
     if (!res.headersSent) {
       res.status(500).json({ error: 'Failed to generate prep insights' });
     }
+  }
+});
+
+router.post('/listen', async (req: Request, res: Response) => {
+  try {
+    const data = req.body as PrepInsightsOutput;
+
+    if (!data?.summary) {
+      res.status(400).json({ error: 'Missing insights data' });
+      return;
+    }
+
+    const script = buildInsightsNarration(data);
+    const TTS_LIMIT = 4096;
+    const truncated =
+      script.length <= TTS_LIMIT
+        ? script
+        : script.slice(0, TTS_LIMIT).replace(/[^.!?]*$/, '').trimEnd();
+
+    const audioStream = await synthesizeSpeech(truncated);
+
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    audioStream.pipe(res);
+
+    audioStream.on('error', (err: Error) => {
+      console.error('Insights audio stream error:', err);
+      if (!res.headersSent) res.status(500).json({ error: 'Audio stream failed' });
+    });
+  } catch (err) {
+    console.error('Prep insights listen error:', err);
+    if (!res.headersSent) res.status(500).json({ error: 'Failed to generate insights audio' });
   }
 });
 

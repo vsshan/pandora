@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta
 
 from raphtory import Graph
+from raphtory.graphql import RaphtoryClient
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
@@ -53,7 +54,10 @@ from agent.graph.schema import (
     VERTEX_NOMINATION,
 )
 
-GRAPH_PATH = os.path.join(os.path.dirname(__file__), "graph", "pandora_graph.bin")
+RAPHTORY_URL = os.environ.get(
+    "RAPHTORY_URL", "http://raphtory-service.ai-agents.svc.cluster.local:1736"
+)
+RAPHTORY_GRAPH_PATH = os.environ.get("RAPHTORY_GRAPH_PATH", "graph-data")
 
 # ── Graph singleton ───────────────────────────────────────────────────────────
 
@@ -63,12 +67,8 @@ _graph: Graph | None = None
 def _get_graph() -> Graph:
     global _graph
     if _graph is None:
-        if not os.path.exists(GRAPH_PATH):
-            raise FileNotFoundError(
-                f"Graph not found at {GRAPH_PATH}. "
-                "Run: python -m agent.graph.ingest"
-            )
-        _graph = Graph.load_from_file(GRAPH_PATH)
+        client = RaphtoryClient(RAPHTORY_URL)
+        _graph = client.receive_graph(RAPHTORY_GRAPH_PATH)
     return _graph
 
 
@@ -167,6 +167,61 @@ def get_contact_interactions(contact_id: str, days_back: int = 365, limit: int =
     return {"contact_id": contact_id, "count": len(interactions), "interactions": interactions}
 
 
+def get_banker_interactions(banker_name: str, days_back: int = 365, limit: int = 50) -> dict:
+    """
+    Retrieve all interactions a banker has had with their contacts, ordered
+    most-recent first. Use a partial name if the full name is unknown.
+    `days_back` controls the time window (default: last 365 days).
+    Returns contact name, company, interaction type, date, and notes.
+    """
+    g = _get_graph()
+    name_q = banker_name.lower()
+    cutoff_ms = _days_ago_ms(days_back)
+
+    banker_vertex = None
+    for v in g.nodes:
+        props = _props(v)
+        if props.get("vertex_type") == VERTEX_BANKER:
+            if name_q in props.get(PROP_BANKER_NAME, "").lower():
+                banker_vertex = v
+                break
+
+    if banker_vertex is None:
+        return {"error": f"Banker '{banker_name}' not found", "interactions": []}
+
+    bprops = _props(banker_vertex)
+    interactions = []
+
+    for e in banker_vertex.layer(EDGE_INTERACTED_WITH).out_edges:
+        contact_p = _props(e.dst)
+        contact_name = contact_p.get(PROP_CONTACT_NAME, "") or e.dst.name
+        contact_company = contact_p.get(PROP_CONTACT_COMPANY, "")
+        edge_props = _props(e)
+        for ts in sorted(e.history.t.collect(), reverse=True):
+            if ts < cutoff_ms:
+                continue
+            interactions.append({
+                "date": _ms_to_str(ts),
+                "contact_name": contact_name,
+                "contact_company": contact_company,
+                "type": edge_props.get(PROP_INTERACTION_TYPE, ""),
+                "notes": edge_props.get(PROP_INTERACTION_NOTES, ""),
+            })
+            if len(interactions) >= limit:
+                break
+        if len(interactions) >= limit:
+            break
+
+    interactions.sort(key=lambda x: x["date"], reverse=True)
+
+    return {
+        "banker": bprops.get(PROP_BANKER_NAME, ""),
+        "bank": bprops.get(PROP_BANKER_BANK, ""),
+        "count": len(interactions),
+        "interactions": interactions,
+    }
+
+
 def get_banker_portfolio(banker_name: str) -> dict:
     """
     Get a summary of a banker's portfolio: their top contacts, active deals,
@@ -240,6 +295,40 @@ def get_banker_portfolio(banker_name: str) -> dict:
         "deals": deals[:10],
         "events_hosted": events_hosted[:10],
     }
+
+
+def rank_bankers_by_interactions(bank: str = "", limit: int = 20) -> dict:
+    """
+    Rank bankers by their total number of logged interactions (meetings, calls,
+    emails) with contacts. Optionally filter by bank name. Returns a sorted
+    leaderboard with each banker's name, bank, role, and interaction count.
+    """
+    g = _get_graph()
+    bank_q = bank.lower()
+    rows = []
+
+    for v in g.nodes:
+        props = _props(v)
+        if props.get("vertex_type") != VERTEX_BANKER:
+            continue
+        banker_bank = props.get(PROP_BANKER_BANK, "")
+        if bank_q and bank_q not in banker_bank.lower():
+            continue
+        interaction_count = v.layer(EDGE_INTERACTED_WITH).out_degree()
+        rows.append({
+            "name": props.get(PROP_BANKER_NAME, ""),
+            "bank": banker_bank,
+            "role": props.get(PROP_BANKER_ROLE, ""),
+            "interaction_count": interaction_count,
+        })
+
+    rows.sort(key=lambda r: r["interaction_count"], reverse=True)
+    rows = rows[:limit]
+
+    for i, r in enumerate(rows, start=1):
+        r["rank"] = i
+
+    return {"count": len(rows), "bankers": rows}
 
 
 def search_deals(query: str = "", stage: str = "", sector: str = "", deal_type: str = "", limit: int = 10) -> dict:
@@ -496,11 +585,20 @@ Available component types and their props:
 - **Table** — data table. Props: `columns` (string[]), `rows` (array of string arrays)
 - **Grid** — responsive grid of cards. Props: `columns` (2 | 3 | 4), `children` uses child element IDs
 - **Accordion** — collapsible section. Props: `title` (string), `children` uses child element IDs
+- **Chart** — data visualization. Props:
+  - `chartType`: `"bar"` | `"line"` | `"pie"`
+  - `data`: array of objects with `name` (string) and `value` (number), e.g. `[{"name": "Discovery", "value": 12}]`
+  - `title`: string (optional, shown above chart)
+  - Use `"bar"` for rankings, pipeline stages, campaign sizes, counts by category
+  - Use `"line"` for trends over time (monthly/quarterly aggregations)
+  - Use `"pie"` for percentage breakdowns (tier mix, type distribution, status split)
 
 Design guidelines:
 - For lists of contacts/deals/events: use Table
 - For a single contact/deal profile: use Stack of Card + Badge + Metric
 - For KPI summaries: use Grid of Metric elements
+- For rankings/distributions/pipeline/trends: use Chart
+- When the user asks for a "chart", "graph", "visualization", "breakdown", or "distribution": prefer Chart over Table
 - Tier A → Badge variant "success", Tier B → "warning", Tier C → "outline"
 - Deal stages: Closed Won → "success", Closed Lost → "destructive", others → "default"
 - Active campaigns → "success", Completed → "outline", Planned → "warning"
@@ -517,7 +615,9 @@ root_agent = Agent(
     tools=[
         search_contacts,
         get_contact_interactions,
+        get_banker_interactions,
         get_banker_portfolio,
+        rank_bankers_by_interactions,
         search_deals,
         get_campaign_overview,
         search_events,

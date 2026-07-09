@@ -129,7 +129,21 @@ def generate_interactions(
     banker_ids = [b["id"] for b in bankers] if bankers else [f"banker_{i}" for i in range(100)]
     contact_ids = [c["id"] for c in contacts] if contacts else [f"contact_{i}" for i in range(50_000)]
 
+    # Each banker gets a pool of 20–60 "regular" contacts they interact with
+    # repeatedly, making multi-interaction relationships realistic.
+    # 70% of interactions come from this pool; 30% are one-off contacts.
+    regular_contacts: dict[str, list[str]] = {
+        bid: random.sample(contact_ids, k=random.randint(20, 60))
+        for bid in banker_ids
+    }
+
     for i in range(n):
+        banker_id = random.choice(banker_ids)
+        if random.random() < 0.70:
+            contact_id = random.choice(regular_contacts[banker_id])
+        else:
+            contact_id = random.choice(contact_ids)
+
         dt = _random_date()
         sector = random.choice(SECTORS)
         deal_type = random.choice(DEAL_TYPES)
@@ -141,8 +155,8 @@ def generate_interactions(
         )
         interactions.append({
             "id": f"interaction_{i}",
-            "banker_id": random.choice(banker_ids),
-            "contact_id": random.choice(contact_ids),
+            "banker_id": banker_id,
+            "contact_id": contact_id,
             "type": random.choice(INTERACTION_TYPES),
             "notes": notes,
             "duration_min": random.choice([15, 30, 45, 60, 90, 120]) if random.random() > 0.3 else None,

@@ -10,7 +10,7 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
   if (!isUser && msg.ui_spec) {
     return (
       <div className="flex justify-start mb-3">
-        <div className="max-w-[95%] rounded-2xl rounded-bl-sm px-3 py-3 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
+        <div className="w-[95%] rounded-2xl rounded-bl-sm px-3 py-3 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark">
           <ChatRenderer spec={msg.ui_spec} />
         </div>
       </div>

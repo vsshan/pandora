@@ -1,0 +1,10 @@
+FROM pometry/raphtory:latest
+
+# Copy your saved graph data into the image
+COPY ./pandora_graph.bin /app/graph-data
+
+# Expose the Raphtory GraphQL server port
+EXPOSE 1736
+
+# Start the Raphtory server pointing at your graph directory
+CMD ["/raphtory-graphql", "--working-dir", "/app/graph-data"]

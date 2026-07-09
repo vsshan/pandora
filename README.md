@@ -56,7 +56,7 @@ graph TB
             T8["get_nominations"]
         end
 
-        subgraph Graph["Raphtory Graph  (pandora_graph.bin)"]
+        subgraph Graph["Raphtory Graph Server  (Kubernetes :1736)"]
             GN["50K Contacts · 100 Bankers\n500 Deals · 50 Campaigns\n300 Events · 500 Nominations\n50K Interactions"]
         end
 
@@ -89,8 +89,9 @@ graph TB
 | Express API | Node.js, Express 5, TypeScript |
 | AI (podcast + insights) | Anthropic Claude API, OpenAI TTS |
 | AI (chatbot) | Google ADK, LiteLLM, Claude Haiku via Anthropic API |
-| Graph database | Raphtory (Rust-backed temporal property graph) |
+| Graph database | Raphtory (Rust-backed temporal property graph, served via Kubernetes) |
 | Python service | FastAPI, Uvicorn |
+| Graph hosting | Kubernetes (Docker Desktop or any cluster) |
 | Production hosting | Cloudflare Pages (frontend) + Cloudflare Pages Functions (API) |
 
 ## Prerequisites
@@ -99,6 +100,7 @@ graph TB
 - Python 3.11+
 - An Anthropic API key
 - An OpenAI API key (for TTS audio)
+- Docker Desktop with Kubernetes enabled (for the Raphtory graph server)
 
 ## Setup
 
@@ -143,6 +145,7 @@ Edit `agent/.env`:
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...   # same key as root .env
+RAPHTORY_URL=http://localhost:1736   # port-forwarded Raphtory server (local dev)
 ```
 
 ### 5. Build the Raphtory CRM graph (one-time)
@@ -154,23 +157,59 @@ python -m agent.graph.ingest
 
 This generates mock data (50K contacts, 50K interactions, 100 bankers, 500 deals, 300 events, 50 campaigns, 500 nominations) and saves the graph to `agent/graph/pandora_graph.bin`. Takes ~30 seconds.
 
+### 6. Deploy the Raphtory graph server to Kubernetes (one-time)
+
+The graph is served via a Raphtory GraphQL server running in Kubernetes. Build and push the Docker image, then deploy it:
+
+```bash
+cd agent/graph
+
+# Build the image (bundles pandora_graph.bin into the container)
+docker build -t localhost:5000/raphtory-crm-graph:v1 -f dockerfile .
+docker push localhost:5000/raphtory-crm-graph:v1
+
+# Create the namespace and deploy
+kubectl create namespace ai-agents
+kubectl apply -f raphtory-deployment.yaml
+```
+
+Verify the pod is running:
+
+```bash
+kubectl get pods -n ai-agents
+# NAME                               READY   STATUS    RESTARTS   AGE
+# raphtory-server-xxx-xxx            1/1     Running   0          30s
+```
+
+> **Note:** The image requires a local Docker registry at `localhost:5000`. If you don't have one running, start it with: `docker run -d -p 5000:5000 --name registry registry:2`
+
 ## Starting the Services
 
-Pandora requires **three processes** running simultaneously in local development.
+Pandora requires **four processes** running simultaneously in local development.
 
-### Terminal 1 — Python ADK agent service (port 8000)
+### Terminal 1 — Raphtory graph server port-forward
+
+The Raphtory server runs in Kubernetes and must be forwarded to `localhost:1736` so the Python agent can reach it:
+
+```bash
+kubectl port-forward -n ai-agents svc/raphtory-service 1736:1736
+```
+
+Keep this terminal open. The Raphtory GraphQL UI is then accessible at [http://localhost:1736](http://localhost:1736).
+
+### Terminal 2 — Python ADK agent service (port 8000)
 
 ```bash
 python -m uvicorn agent.main:app --port 8000 --reload
 ```
 
-### Terminal 2 — Express API server (port 3001)
+### Terminal 3 — Express API server (port 3001)
 
 ```bash
 npm run dev:server
 ```
 
-### Terminal 3 — React dev server (port 5173)
+### Terminal 4 — React dev server (port 5173)
 
 ```bash
 npm run dev
@@ -227,9 +266,11 @@ pandora/
 │   ├── main.py                 # FastAPI app (POST /chat, GET /health)
 │   ├── requirements.txt
 │   └── graph/
-│       ├── schema.py           # Vertex / edge / property name constants
-│       ├── mock_data.py        # Faker-based CRM data generators
-│       └── ingest.py           # Builds and saves pandora_graph.bin
+│       ├── schema.py               # Vertex / edge / property name constants
+│       ├── mock_data.py            # Faker-based CRM data generators
+│       ├── ingest.py               # Builds and saves pandora_graph.bin
+│       ├── dockerfile              # Bundles graph into Raphtory server image
+│       └── raphtory-deployment.yaml# Kubernetes Deployment + Service (ai-agents namespace)
 └── .env.example
 ```
 
@@ -249,8 +290,12 @@ pandora/
 ChatWidget → POST /api/chat/message (Express)
                   └── POST /chat (FastAPI :8000)
                            └── Google ADK Agent (Claude Haiku via LiteLLM)
-                                    └── 8 tools → Raphtory graph
+                                    └── 8 tools → RaphtoryClient.receive_graph()
+                                                        └── Raphtory server (Kubernetes :1736)
+                                                             └── pandora_graph.bin (baked into image)
 ```
+
+The Python agent connects to the Raphtory server via `RaphtoryClient` from `raphtory.graphql`. In local dev the server is exposed at `localhost:1736` via `kubectl port-forward`; in-cluster it is reachable at `raphtory-service.ai-agents.svc.cluster.local:1736`. The URL is configured via the `RAPHTORY_URL` environment variable.
 
 **Agent tools:**
 

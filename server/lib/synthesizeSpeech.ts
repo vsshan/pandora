@@ -1,10 +1,14 @@
 import OpenAI from 'openai';
 import { Readable } from 'node:stream';
 
-const openai = new OpenAI();
+let openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!openai) openai = new OpenAI();
+  return openai;
+}
 
 export async function synthesizeSpeech(text: string): Promise<Readable> {
-  const response = await openai.audio.speech.create({
+  const response = await getOpenAI().audio.speech.create({
     model: 'tts-1',
     voice: 'nova',        // warm, professional, mid-paced — ideal for briefings
     input: text,

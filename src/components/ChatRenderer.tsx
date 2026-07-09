@@ -1,9 +1,13 @@
 /**
  * Renders json-render UI specs (https://json-render.dev) for React 18.
- * Supports: Stack, Grid, Text, Heading, Card, Badge, Metric, Table, Accordion
+ * Supports: Stack, Grid, Text, Heading, Card, Badge, Metric, Table, Accordion, Chart
  */
 
 import { useState } from 'react';
+import {
+  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+} from 'recharts';
 
 export interface UiElement {
   type: string;
@@ -66,6 +70,67 @@ function TableEl({ columns, rows }: { columns: string[]; rows: string[][] }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+const CHART_COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#f43f5e', '#3b82f6', '#a855f7', '#14b8a6', '#fb923c'];
+
+interface ChartDataPoint {
+  name: string;
+  value: number;
+  [key: string]: string | number;
+}
+
+function ChartEl({
+  chartType,
+  data,
+  title,
+  xKey = 'name',
+  yKey = 'value',
+}: {
+  chartType: 'bar' | 'line' | 'pie';
+  data: ChartDataPoint[];
+  title?: string;
+  xKey?: string;
+  yKey?: string;
+}) {
+  return (
+    <div className="rounded-xl border border-border-light dark:border-border-dark p-3 bg-card-light dark:bg-card-dark">
+      {title && (
+        <p className="text-xs font-semibold text-text-light-primary dark:text-text-dark-primary mb-2">{title}</p>
+      )}
+      <ResponsiveContainer width="100%" height={220}>
+        {chartType === 'pie' ? (
+          <PieChart>
+            <Pie data={data} dataKey={yKey} nameKey={xKey} cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false}>
+              {data.map((_entry, i) => (
+                <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(v) => typeof v === 'number' ? v.toLocaleString() : String(v)} />
+            <Legend iconSize={8} wrapperStyle={{ fontSize: '10px' }} />
+          </PieChart>
+        ) : chartType === 'line' ? (
+          <LineChart data={data} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.1} />
+            <XAxis dataKey={xKey} tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => typeof v === 'number' && v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(0)}M` : typeof v === 'number' && v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
+            <Tooltip formatter={(v) => typeof v === 'number' ? v.toLocaleString() : String(v)} />
+            <Line type="monotone" dataKey={yKey} stroke={CHART_COLORS[0]} strokeWidth={2} dot={false} />
+          </LineChart>
+        ) : (
+          <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 48, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.1} horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => typeof v === 'number' && v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(0)}M` : typeof v === 'number' && v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
+            <YAxis type="category" dataKey={xKey} tick={{ fontSize: 10 }} tickLine={false} axisLine={false} width={44} />
+            <Tooltip formatter={(v) => typeof v === 'number' ? v.toLocaleString() : String(v)} />
+            {data.length > 0 && Object.keys(data[0]).filter(k => k !== xKey).map((key, i) => (
+              <Bar key={key} dataKey={key} fill={CHART_COLORS[i % CHART_COLORS.length]} radius={[0, 3, 3, 0]} maxBarSize={18} />
+            ))}
+          </BarChart>
+        )}
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -167,6 +232,17 @@ function RenderElement({ id, elements }: { id: string; elements: Record<string, 
 
     case 'Accordion':
       return <AccordionEl title={String(props.title ?? '')}>{childNodes}</AccordionEl>;
+
+    case 'Chart':
+      return (
+        <ChartEl
+          chartType={(props.chartType as 'bar' | 'line' | 'pie') ?? 'bar'}
+          data={(props.data as ChartDataPoint[]) ?? []}
+          title={props.title != null ? String(props.title) : undefined}
+          xKey={props.xKey != null ? String(props.xKey) : 'name'}
+          yKey={props.yKey != null ? String(props.yKey) : 'value'}
+        />
+      );
 
     default:
       return <p className="text-xs text-text-light-secondary dark:text-text-dark-secondary">[unknown: {el.type}]</p>;

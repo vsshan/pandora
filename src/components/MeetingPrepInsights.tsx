@@ -1,5 +1,6 @@
 import Icon from './Icon';
 import type { PrepInsightsData, PrepSentiment } from '../types/prepInsights';
+import { usePrepInsightsAudio } from '../hooks/usePrepInsightsAudio';
 
 interface Props {
   data: PrepInsightsData;
@@ -8,25 +9,82 @@ interface Props {
 
 function SentimentBadge({ sentiment }: { sentiment: PrepSentiment }) {
   const styles: Record<PrepSentiment, string> = {
-    Positive:
-      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    Neutral:
-      'bg-slate-100 text-slate-600 dark:bg-slate-700/50 dark:text-slate-300',
-    Urgent:
-      'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    Positive: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    Neutral: 'bg-slate-100 text-slate-600 dark:bg-slate-700/50 dark:text-slate-300',
+    Urgent: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   };
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles[sentiment]}`}
-    >
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles[sentiment]}`}>
       {sentiment} Sentiment
     </span>
   );
 }
 
 export default function MeetingPrepInsights({ data, onDismiss }: Props) {
+  const audio = usePrepInsightsAudio();
+
+  const handleListenClick = () => {
+    if (audio.status === 'idle' || audio.status === 'error') {
+      audio.play(data);
+    } else if (audio.status === 'playing') {
+      audio.pause();
+    } else if (audio.status === 'paused') {
+      audio.resume();
+    }
+  };
+
+  const listenLabel = () => {
+    if (audio.status === 'loading') return 'Preparing audio…';
+    if (audio.status === 'playing') return 'Pause';
+    if (audio.status === 'paused') return 'Resume';
+    if (audio.status === 'error') return 'Retry';
+    return 'Listen';
+  };
+
   return (
     <div className="mt-2 space-y-3 rounded-xl border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark p-4 shadow-inner">
+
+      {/* Listen control */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleListenClick}
+          disabled={audio.status === 'loading'}
+          className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+            audio.status === 'loading'
+              ? 'bg-primary/10 text-primary dark:bg-accent/10 dark:text-accent cursor-not-allowed'
+              : audio.status === 'playing'
+              ? 'bg-primary dark:bg-accent text-white shadow-sm hover:opacity-90'
+              : audio.status === 'error'
+              ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100'
+              : 'bg-primary/10 text-primary dark:bg-accent/10 dark:text-accent hover:bg-primary/20 dark:hover:bg-accent/20'
+          }`}
+        >
+          {audio.status === 'loading' && (
+            <span className="h-3 w-3 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
+          )}
+          {audio.status === 'playing' && <Icon name="pause" className="text-base shrink-0" />}
+          {audio.status === 'paused' && <Icon name="play_arrow" filled className="text-base shrink-0" />}
+          {audio.status === 'error' && <Icon name="refresh" className="text-base shrink-0" />}
+          {audio.status === 'idle' && <Icon name="volume_up" className="text-base shrink-0" />}
+          <span>{listenLabel()}</span>
+        </button>
+
+        {(audio.status === 'playing' || audio.status === 'paused') && (
+          <button
+            type="button"
+            onClick={audio.stop}
+            className="flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+          >
+            <Icon name="stop" className="text-base shrink-0" />
+            Stop
+          </button>
+        )}
+
+        {audio.status === 'error' && audio.errorMessage && (
+          <p className="text-xs text-red-500">{audio.errorMessage}</p>
+        )}
+      </div>
 
       {/* 1. AI Insight Brief — Client Pulse */}
       <div className="overflow-hidden rounded-xl bg-card-light dark:bg-card-dark shadow-sm">
@@ -62,11 +120,7 @@ export default function MeetingPrepInsights({ data, onDismiss }: Props) {
               key={i}
               className="flex items-start gap-3 overflow-hidden rounded-xl bg-card-light dark:bg-card-dark px-4 py-3 shadow-sm"
             >
-              <Icon
-                name="bolt"
-                filled
-                className="text-primary dark:text-accent text-lg shrink-0 mt-0.5"
-              />
+              <Icon name="bolt" filled className="text-primary dark:text-accent text-lg shrink-0 mt-0.5" />
               <p className="text-sm text-text-light-primary dark:text-text-dark-primary leading-snug">
                 {tip}
               </p>
@@ -94,10 +148,7 @@ export default function MeetingPrepInsights({ data, onDismiss }: Props) {
                   {item.source}
                 </p>
               </div>
-              <Icon
-                name="trending_up"
-                className="text-accent text-base shrink-0 mt-0.5"
-              />
+              <Icon name="trending_up" className="text-accent text-base shrink-0 mt-0.5" />
             </div>
           ))}
         </div>
@@ -128,7 +179,7 @@ export default function MeetingPrepInsights({ data, onDismiss }: Props) {
       {/* Dismiss */}
       <button
         type="button"
-        onClick={onDismiss}
+        onClick={() => { audio.stop(); onDismiss(); }}
         className="w-full rounded-xl border border-border-light dark:border-border-dark py-2.5 text-sm font-semibold text-text-light-secondary dark:text-text-dark-secondary hover:bg-card-light dark:hover:bg-card-dark transition-colors"
       >
         Close Insights

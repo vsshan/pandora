@@ -64,7 +64,7 @@ The Python agent lives in `agent/`:
 - `agent/graph/mock_data.py` — Faker-based generators for 50K contacts, 50K interactions, 500 deals, etc.
 - `agent/graph/ingest.py` — Builds and saves `pandora_graph.bin` (run once before starting the service)
 
-The ADK model string is `litellm/anthropic/claude-haiku-4-5-20251001` — change it in `agent/agent.py` to swap models. The `ANTHROPIC_API_KEY` from the root `.env` is reused; copy it to `agent/.env` as well.
+The ADK model is `LiteLlm(model="anthropic/claude-haiku-4-5-20251001")` — swap models by changing the string inside `LiteLlm(...)` in `agent/agent.py`. Never pass LiteLLM models as a plain string; the `LiteLlm` wrapper is required. The `ANTHROPIC_API_KEY` from the root `.env` is reused; copy it to `agent/.env` as well.
 
 ### Raphtory Graph Schema
 

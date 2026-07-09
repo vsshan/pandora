@@ -36,7 +36,13 @@ router.post('/generate', async (req: Request, res: Response) => {
     }
 
     // Step 1: generate podcast script via Claude
-    const script = await buildScript({ meeting, previousMeetings, news, insights, company });
+    const rawScript = await buildScript({ meeting, previousMeetings, news, insights, company });
+    // OpenAI TTS hard limit is 4096 characters; truncate at last sentence boundary if needed
+    const TTS_LIMIT = 4096;
+    const script =
+      rawScript.length <= TTS_LIMIT
+        ? rawScript
+        : rawScript.slice(0, TTS_LIMIT).replace(/[^.!?]*$/, '').trimEnd();
 
     // Step 2: synthesize audio via OpenAI TTS
     const audioStream = await synthesizeSpeech(script);
