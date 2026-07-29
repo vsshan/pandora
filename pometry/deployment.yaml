@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pometry-server
+  namespace: ai-agents
+spec:
+  replicas: 1   # graph is built in-memory on startup — keep at 1 unless using read replicas
+  selector:
+    matchLabels:
+      app: pometry-server
+  template:
+    metadata:
+      labels:
+        app: pometry-server
+    spec:
+      containers:
+        - name: pometry
+          image: localhost:5000/pandora-pometry:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ALLOW_ORIGIN
+              value: "*"
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "8Gi"
+              cpu: "2"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pometry-service
+  namespace: ai-agents
+spec:
+  selector:
+    app: pometry-server
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP   # Internal-only; agents in the same cluster reach it directly
